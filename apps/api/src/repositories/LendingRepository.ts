@@ -96,7 +96,8 @@ export class LendingRepository extends BaseRepository<
     amount: string,
     shares: string,
   ): Promise<DepositPosition> {
-    return await db.transaction(async (tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return await db.transaction(async (tx: any) => {
       const results = await tx
         .insert(depositPositions)
         .values({
@@ -127,7 +128,8 @@ export class LendingRepository extends BaseRepository<
     depositorId: string,
     amount: string,
   ): Promise<DepositPosition | undefined> {
-    return await db.transaction(async (tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return await db.transaction(async (tx: any) => {
       const [existing] = await tx
         .select()
         .from(depositPositions)
@@ -168,7 +170,8 @@ export class LendingRepository extends BaseRepository<
     borrowerId: string,
     data: { borrowAmount: string; collateralAmount: string; collateralAsset: string },
   ): Promise<BorrowPosition> {
-    return await db.transaction(async (tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return await db.transaction(async (tx: any) => {
       const results = await tx
         .insert(borrowPositions)
         .values({
@@ -201,7 +204,8 @@ export class LendingRepository extends BaseRepository<
     borrowerId: string,
     amount: string,
   ): Promise<BorrowPosition | undefined> {
-    return await db.transaction(async (tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return await db.transaction(async (tx: any) => {
       const [existing] = await tx
         .select()
         .from(borrowPositions)

@@ -60,7 +60,9 @@ export class StellarService {
     try {
       this.assertValidAddress(address);
       const account = await this.server.accounts().accountId(address).call();
-      const nativeBalance = account.balances.find((balance) => balance.asset_type === 'native');
+      const nativeBalance = account.balances.find(
+        (balance: { asset_type: string; balance?: string }) => balance.asset_type === 'native',
+      );
       return nativeBalance?.balance ?? '0';
     } catch (error) {
       throw new Error('Failed to get account balance', { cause: error });
