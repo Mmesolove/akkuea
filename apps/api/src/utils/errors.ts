@@ -61,30 +61,19 @@ export function handleError(error: unknown): ErrorResponse {
     };
   }
 
-  const err = error as Record<string, unknown>;
-  if (
-    typeof err === 'object' &&
-    err !== null &&
-    'message' in err &&
-    'statusCode' in err &&
-    'code' in err
-  ) {
-    return {
-      success: false,
-      error: String(err.code),
-      message: String(err.message),
-      statusCode: Number(err.statusCode),
-      timestamp,
-    };
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const err = error as any;
+  const code = err?.code ?? err?.errorCode ?? 'INTERNAL_ERROR';
+  const statusCode = Number(err?.status ?? err?.statusCode ?? 500);
+  const message = err?.message ?? 'An unexpected error occurred';
 
-  if (isAppError(error)) {
-    const err = error as { status?: number; statusCode?: number; code: string; message: string };
+  // If it's something that looks like our app errors (from local or shared)
+  if (err && typeof err === 'object' && ('code' in err || 'errorCode' in err)) {
     return {
       success: false,
-      error: String(err.code),
-      message: err.message,
-      statusCode: err.status || err.statusCode || 500,
+      error: String(code),
+      message: String(message),
+      statusCode: statusCode === 0 ? 500 : statusCode,
       timestamp,
     };
   }
