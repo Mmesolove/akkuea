@@ -128,6 +128,20 @@ export class StellarService {
     }
   }
 
+  async callAndSubmitContract(
+    contractId: string,
+    method: string,
+    args: unknown[],
+    signerSecret: string,
+    sourceAccount: string,
+  ): Promise<string> {
+    const unsignedXdr = await this.callContract(contractId, method, args, sourceAccount);
+    const transaction = TransactionBuilder.fromXDR(unsignedXdr, this.networkPassphrase);
+    const signer = Keypair.fromSecret(signerSecret);
+    transaction.sign(signer);
+    return this.submitTransaction(transaction.toXDR());
+  }
+
   async mintPropertyShares(params: MintSharesParams): Promise<MintSharesResult> {
     if (params.amount <= 0) {
       throw ApiError.badRequest('Tokenization amount must be greater than zero');

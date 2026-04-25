@@ -11,6 +11,7 @@ export const notificationEventTypeEnum = pgEnum('notification_event_type', [
   'REPAYMENT_PROCESSED',
   'RISK_WARNING',
   'LIQUIDATION_RISK',
+  'LIQUIDATION_EXECUTED',
   'SYSTEM_ALERT',
   'INVESTMENT_OPPORTUNITY',
   'PORTFOLIO_UPDATE',

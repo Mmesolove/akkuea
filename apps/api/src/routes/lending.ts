@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { validate, uuidParamSchema, paginationQuerySchema, rateLimit } from '../middleware';
 import { LendingController } from '../controllers/LendingController';
 import { positionService } from '../services/PositionService';
+import { isLiquidatorAuthorized } from '../utils/liquidatorAuth';
 
 const poolQuerySchema = paginationQuerySchema.extend({
   asset: z.string().optional(),
@@ -20,6 +21,25 @@ const poolUserParamsSchema = z.object({
   id: z.string().uuid('Invalid UUID format'),
   address: stellarAddressSchema,
 });
+
+const liquidationParamsSchema = z.object({
+  id: z.string().uuid('Invalid pool UUID format'),
+  borrowerId: z.string().uuid('Invalid borrower UUID format'),
+});
+
+const liquidatorAuth = new Elysia({ name: 'liquidator-auth' }).onBeforeHandle(
+  ({ headers, set }) => {
+    if (!isLiquidatorAuthorized(headers as Record<string, string | undefined>)) {
+      set.status = 403;
+      return {
+        success: false,
+        error: 'FORBIDDEN',
+        message: 'Liquidator access required',
+        timestamp: new Date().toISOString(),
+      };
+    }
+  },
+);
 
 const depositSchema = z.object({
   amount: z.string().regex(/^\d+(\.\d+)?$/, 'Must be a positive decimal string'),
@@ -114,4 +134,11 @@ export const lendingRoutes = new Elysia({ prefix: '/lending' })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .get('/pools/:id/user/:address/summary', async (ctx: any) =>
     LendingController.getUserPositionSummary(ctx),
+  )
+
+  // POST /pools/:id/positions/:borrowerId/liquidate - Execute liquidation (liquidator role required)
+  .use(liquidatorAuth)
+  .use(validate({ params: liquidationParamsSchema }))
+  .post('/pools/:id/positions/:borrowerId/liquidate', async (ctx) =>
+    LendingController.liquidate(ctx as Parameters<typeof LendingController.liquidate>[0]),
   );
