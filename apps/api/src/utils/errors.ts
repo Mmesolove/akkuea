@@ -61,8 +61,7 @@ export function handleError(error: unknown): ErrorResponse {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const err = error as any;
+  const err = error as Record<string, unknown>;
   if (
     typeof err === 'object' &&
     err !== null &&
