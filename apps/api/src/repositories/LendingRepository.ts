@@ -264,6 +264,35 @@ export class LendingRepository extends BaseRepository<
     });
   }
 
+  async liquidate(poolId: string, borrowerId: string): Promise<BorrowPosition | undefined> {
+    return await db.transaction(async (tx) => {
+      const [position] = await tx
+        .select()
+        .from(borrowPositions)
+        .where(and(eq(borrowPositions.poolId, poolId), eq(borrowPositions.borrowerId, borrowerId)))
+        .limit(1);
+
+      if (!position) return undefined;
+
+      const principal = parseFloat(position.principal);
+      const accruedInterest = parseFloat(position.accruedInterest);
+      const totalDebt = principal + accruedInterest;
+
+      await tx.delete(borrowPositions).where(eq(borrowPositions.id, position.id));
+
+      await tx
+        .update(lendingPools)
+        .set({
+          totalBorrows: sql`GREATEST(${lendingPools.totalBorrows}::numeric - ${totalDebt.toFixed(7)}::numeric, 0)`,
+          availableLiquidity: sql`${lendingPools.availableLiquidity}::numeric + ${principal.toFixed(7)}::numeric`,
+          utilizationRate: sql`CASE WHEN ${lendingPools.totalDeposits}::numeric = 0 THEN 0 ELSE (GREATEST(${lendingPools.totalBorrows}::numeric - ${totalDebt.toFixed(7)}::numeric, 0) / ${lendingPools.totalDeposits}::numeric) * 100 END`,
+        })
+        .where(eq(lendingPools.id, poolId));
+
+      return position;
+    });
+  }
+
   async getUserDeposits(poolId: string, depositorId: string): Promise<DepositPosition[]> {
     return db
       .select()
