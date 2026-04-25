@@ -16,6 +16,7 @@ import { useWallet } from "@/components/auth/hooks";
 import { propertyApi } from "@/services/api/properties";
 import { getPropertyImage, getPropertyTypeLabel } from "./marketplace.utils";
 
+
 export interface InvestModalProps {
   property: PropertyInfo;
   isOpen: boolean;
