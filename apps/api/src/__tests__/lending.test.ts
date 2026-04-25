@@ -300,11 +300,9 @@ describe.skipIf(!process.env.DATABASE_URL)('Lending Integration Tests (DB requir
   beforeAll(async () => {
     app = new Elysia().use(errorHandler).use(lendingRoutes);
 
-    // Create a test user via the users route so deposit/borrow can find them
+    // Create or get a test user via the users route so deposit/borrow can find them
     const { userRepository } = await import('../repositories/UserRepository');
-    const user = await userRepository.createUser({
-      walletAddress: VALID_STELLAR_ADDRESS,
-    });
+    const user = await userRepository.getOrCreateByWallet(VALID_STELLAR_ADDRESS);
     testUserId = user.id;
   });
 
