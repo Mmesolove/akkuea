@@ -85,6 +85,9 @@ describe.skipIf(skipIfNoDatabase)('Property Routes Integration Tests', () => {
       const response = await app.handle(new Request(`http://localhost/properties/${VALID_UUID}`));
 
       // May return 404 if property doesn't exist in seed data, but should not be 400
+      if (response.status !== 200 && response.status !== 404) {
+        console.error('PROPERTIES GET FAIL:', response.status, await response.json());
+      }
       expect(response.status === 200 || response.status === 404).toBe(true);
     });
   });
