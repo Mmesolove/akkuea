@@ -2,7 +2,7 @@ import { describe, expect, it, beforeAll } from 'bun:test';
 import { Elysia } from 'elysia';
 import { kycRoutes } from '../routes/kyc';
 import { errorHandler } from '../middleware/errorHandler';
-import { VALID_UUID, NON_EXISTENT_UUID, VALID_STELLAR_ADDRESS } from '@real-estate-defi/shared';
+import { VALID_UUID, NON_EXISTENT_UUID } from '@real-estate-defi/shared';
 import { userRepository } from '../repositories/UserRepository';
 
 const skipIfNoDatabase = !process.env.DATABASE_URL;

@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeAll, afterAll } from 'bun:test';
 import { Elysia } from 'elysia';
 import { propertyRoutes } from '../routes/properties';
-import { VALID_UUID, NON_EXISTENT_UUID, VALID_STELLAR_ADDRESS } from '@real-estate-defi/shared';
+import { VALID_UUID, NON_EXISTENT_UUID } from '@real-estate-defi/shared';
 const TEST_WALLET = 'GCVCMAB2RFWXYUOURL7XY3MW6LZUK6FQ5T6E7UFRHH4Y6OL43WER4QYF'; // Unique wallet for property tests
 import { userRepository } from '../repositories/UserRepository';
 import { errorHandler } from '../middleware/errorHandler';
