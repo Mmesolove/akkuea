@@ -52,7 +52,8 @@ export const notifications = pgTable('notifications', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const notificationsRelations = relations(notifications, ({ one }) => ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const notificationsRelations = relations(notifications, ({ one }: any) => ({
   user: one(users, {
     fields: [notifications.userId],
     references: [users.id],
