@@ -186,7 +186,8 @@ describe('KYC Routes', () => {
         }),
       );
       expect(uploadRes.status).toBe(200);
-      const { documentId } = (await uploadRes.json()) as { documentId: string };
+      const uploadBody = (await uploadRes.json()) as { documentId: string };
+      const documentId = uploadBody.documentId;
 
       // 2. Now verify it
       const response = await app.handle(
@@ -218,7 +219,8 @@ describe('KYC Routes', () => {
         }),
       );
       expect(uploadRes.status).toBe(200);
-      const { documentId } = (await uploadRes.json()) as { documentId: string };
+      const uploadBody = (await uploadRes.json()) as { documentId: string };
+      const documentId = uploadBody.documentId;
 
       // 2. Now reject it
       const response = await app.handle(

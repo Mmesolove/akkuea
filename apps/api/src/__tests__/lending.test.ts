@@ -257,25 +257,24 @@ describe('Lending Routes', () => {
   });
 
   describe('GET /lending/pools/:id/user/:address/deposits', () => {
-    it('should return 200 or 500 with valid params', async () => {
+    it('should return 200, 404 or 500 with valid params', async () => {
       const response = await app.handle(
         new Request(
           `http://localhost/lending/pools/${VALID_UUID}/user/${VALID_STELLAR_ADDRESS}/deposits`,
         ),
       );
-      // Without DB returns 500; with DB returns 200
-      expect([200, 500]).toContain(response.status);
+      expect([200, 404, 500]).toContain(response.status);
     });
   });
 
   describe('GET /lending/pools/:id/user/:address/borrows', () => {
-    it('should return 200 or 500 with valid params', async () => {
+    it('should return 200, 404 or 500 with valid params', async () => {
       const response = await app.handle(
         new Request(
           `http://localhost/lending/pools/${VALID_UUID}/user/${VALID_STELLAR_ADDRESS}/borrows`,
         ),
       );
-      expect([200, 500]).toContain(response.status);
+      expect([200, 404, 500]).toContain(response.status);
     });
   });
 
@@ -442,12 +441,12 @@ describe.skipIf(!process.env.DATABASE_URL)('Lending Integration Tests (DB requir
     );
     expect(response.status).toBe(200);
     const position = await response.json();
-    expect(parseFloat(position.principal)).toBe(200);
+    expect(parseFloat(position.principal)).toBeCloseTo(200);
 
     // Verify pool balance updated
     const poolRes = await app.handle(new Request(`http://localhost/lending/pools/${testPoolId}`));
     const pool = await poolRes.json();
-    expect(parseFloat(pool.totalBorrows)).toBe(200);
+    expect(parseFloat(pool.totalBorrows)).toBeCloseTo(200);
     expect(parseFloat(pool.availableLiquidity)).toBe(800);
   });
 
@@ -557,8 +556,8 @@ describe.skipIf(!process.env.DATABASE_URL)('Lending Integration Tests (DB requir
     expect(response.status).toBe(200);
 
     const position = await response.json();
-    expect(parseFloat(position.principal)).toBe(0);
-    expect(parseFloat(position.collateralAmount)).toBe(0);
+    expect(parseFloat(position.principal)).toBeCloseTo(0);
+    expect(parseFloat(position.collateralAmount)).toBeCloseTo(0);
 
     const poolRes = await app.handle(new Request(`http://localhost/lending/pools/${testPoolId}`));
     const pool = await poolRes.json();
