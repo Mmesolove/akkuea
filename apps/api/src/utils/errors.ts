@@ -1,4 +1,4 @@
-import { isAppError } from '@real-estate-defi/shared';
+// No unused imports
 import { ApiError } from '../errors/ApiError';
 
 export class AppError extends Error {
