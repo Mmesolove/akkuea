@@ -4,6 +4,7 @@ import { lendingRoutes } from '../routes/lending';
 import { errorHandler } from '../middleware/errorHandler';
 import { CreatePoolDto, DepositDto, WithdrawDto, BorrowDto, RepayDto } from '../dto/lending.dto';
 import { VALID_STELLAR_ADDRESS, VALID_UUID } from '@real-estate-defi/shared';
+const TEST_WALLET = VALID_STELLAR_ADDRESS.replace('7LBN', '7LEN'); // Unique wallet for lending tests
 
 describe('Lending DTO Validation', () => {
   describe('CreatePoolDto', () => {
@@ -132,7 +133,7 @@ describe('Lending Routes', () => {
           body: JSON.stringify({
             name: 'Test Pool',
             asset: 'USDC',
-            assetAddress: VALID_STELLAR_ADDRESS,
+            assetAddress: TEST_WALLET,
             collateralFactor: '0.75',
             liquidationThreshold: '0.80',
             liquidationPenalty: '0.05',
@@ -219,7 +220,7 @@ describe('Lending Routes', () => {
           body: JSON.stringify({
             borrowAmount: '1000',
             collateralAmount: '1500',
-            collateralAsset: VALID_STELLAR_ADDRESS,
+            collateralAsset: TEST_WALLET,
           }),
         }),
       );
@@ -260,7 +261,7 @@ describe('Lending Routes', () => {
     it('should return 200, 404 or 500 with valid params', async () => {
       const response = await app.handle(
         new Request(
-          `http://localhost/lending/pools/${VALID_UUID}/user/${VALID_STELLAR_ADDRESS}/deposits`,
+          `http://localhost/lending/pools/${VALID_UUID}/user/${TEST_WALLET}/deposits`,
         ),
       );
       expect([200, 404, 500]).toContain(response.status);
@@ -271,7 +272,7 @@ describe('Lending Routes', () => {
     it('should return 200, 404 or 500 with valid params', async () => {
       const response = await app.handle(
         new Request(
-          `http://localhost/lending/pools/${VALID_UUID}/user/${VALID_STELLAR_ADDRESS}/borrows`,
+          `http://localhost/lending/pools/${VALID_UUID}/user/${TEST_WALLET}/borrows`,
         ),
       );
       expect([200, 404, 500]).toContain(response.status);
@@ -301,7 +302,7 @@ describe.skipIf(!process.env.DATABASE_URL)('Lending Integration Tests (DB requir
 
     // Create or get a test user via the users route so deposit/borrow can find them
     const { userRepository } = await import('../repositories/UserRepository');
-    const user = await userRepository.getOrCreateByWallet(VALID_STELLAR_ADDRESS);
+    const user = await userRepository.getOrCreateByWallet(TEST_WALLET);
     testUserId = user.id;
   });
 
@@ -350,7 +351,7 @@ describe.skipIf(!process.env.DATABASE_URL)('Lending Integration Tests (DB requir
         body: JSON.stringify({
           name: 'Integration Test Pool',
           asset: 'USDC',
-          assetAddress: VALID_STELLAR_ADDRESS,
+          assetAddress: TEST_WALLET,
           collateralFactor: '0.75',
           liquidationThreshold: '0.80',
           liquidationPenalty: '0.05',

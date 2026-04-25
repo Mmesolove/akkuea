@@ -15,7 +15,7 @@ describe.skipIf(skipIfNoDatabase)('Property Routes Integration Tests', () => {
   beforeAll(async () => {
     app = new Elysia().use(errorHandler).use(propertyRoutes);
     if (!skipIfNoDatabase) {
-      await userRepository.getOrCreateByWallet(VALID_STELLAR_ADDRESS);
+      await userRepository.getOrCreateByWallet(TEST_WALLET);
     }
   });
 
@@ -72,6 +72,9 @@ describe.skipIf(skipIfNoDatabase)('Property Routes Integration Tests', () => {
         new Request(`http://localhost/properties/${NON_EXISTENT_UUID}`),
       );
 
+      if (response.status !== 404) {
+        console.error('PROPERTY GET 404 FAIL:', response.status, await response.json());
+      }
       expect(response.status).toBe(404);
       const body = await response.json();
       // Support both local ApiError ('NOT_FOUND') and shared NotFoundError ('E5000')
@@ -108,7 +111,7 @@ describe.skipIf(skipIfNoDatabase)('Property Routes Integration Tests', () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-user-address': VALID_STELLAR_ADDRESS,
+            'x-user-address': TEST_WALLET,
           },
           body: JSON.stringify(propertyData),
         }),

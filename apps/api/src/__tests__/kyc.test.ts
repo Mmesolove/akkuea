@@ -184,6 +184,9 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
           body: formData,
         }),
       );
+      if (uploadRes.status !== 200) {
+        console.error('KYC UPLOAD FAIL:', uploadRes.status, await uploadRes.json());
+      }
       expect(uploadRes.status).toBe(200);
       const uploadBody = (await uploadRes.json()) as { documentId: string };
       const documentId = uploadBody.documentId;
@@ -196,6 +199,9 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
           body: JSON.stringify({ verified: true }),
         }),
       );
+      if (response.status !== 200) {
+        console.error('KYC VERIFY FAIL:', response.status, await response.json());
+      }
       expect(response.status).toBe(200);
       const body = (await response.json()) as { success?: boolean };
       expect(body.success).toBe(true);
