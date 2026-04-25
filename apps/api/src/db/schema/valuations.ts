@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, decimal, timestamp, jsonb, text, index } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, decimal, timestamp, jsonb, text, index } from 'drizzle-orm/pg-core';
 
 export const valuationStatusEnum = ['active', 'stale', 'rejected', 'manual_review'] as const;
 

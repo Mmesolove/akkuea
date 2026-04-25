@@ -47,6 +47,7 @@ export class ValuationRepository {
         set: { status: record.status, rejectionReason: record.rejectionReason ?? null },
       })
       .returning();
+    if (!row) throw new Error(`Failed to persist valuation ${record.id}: no row returned`);
     return toRecord(row);
   }
 
