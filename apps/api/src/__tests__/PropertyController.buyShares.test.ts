@@ -1,5 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, it, spyOn, mock } from 'bun:test';
+
+// Mock the DB module BEFORE importing any internal files to override the Proxy export
+export let mockTxImpl: any = null;
+mock.module('../db', () => ({
+  db: {
+    transaction: async (fn: any) => {
+      if (mockTxImpl) return mockTxImpl(fn);
+      return fn({});
+    }
+  }
+}));
+
 import { PropertyController } from '../controllers/PropertyController';
 import { stellarService } from '../services/StellarService';
 import { db } from '../db';
@@ -15,27 +26,17 @@ const ADMIN_SECRET = 'SADMINSECRETXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 
 let originalMintPropertyShares: any;
 let originalGetMintingConfig: any;
-let originalDbTransaction: any;
-let originalPropertyFindById: any;
-let originalGetOrCreateByWallet: any;
-let originalUserFindById: any;
 
 beforeEach(() => {
   originalMintPropertyShares = stellarService.mintPropertyShares;
   originalGetMintingConfig = stellarService.getMintingConfig;
-  originalDbTransaction = db.transaction;
-  originalPropertyFindById = propertyRepository.findById;
-  originalGetOrCreateByWallet = userRepository.getOrCreateByWallet;
-  originalUserFindById = userRepository.findById;
 });
 
 afterEach(() => {
   (stellarService as any).mintPropertyShares = originalMintPropertyShares;
   (stellarService as any).getMintingConfig = originalGetMintingConfig;
-  (db as any).transaction = originalDbTransaction;
-  (propertyRepository as any).findById = originalPropertyFindById;
-  (userRepository as any).getOrCreateByWallet = originalGetOrCreateByWallet;
-  (userRepository as any).findById = originalUserFindById;
+  // spyOn automatically restores mocks if using bun:test's mock.restore() or similar, 
+  // but we can just let spyOn do its thing if we use it correctly.
 });
 
 // Skip tests if DATABASE_URL is not set
@@ -52,6 +53,7 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
     });
 
     (stellarService as any).mintPropertyShares = async (params: any) => {
+      console.log('MOCK stellarService.mintPropertyShares CALLED');
       mintParams = params;
       return {
         txHash: 'a'.repeat(64),
@@ -61,28 +63,34 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
 
     let capturedInsert: any = {};
 
-    (db as any).transaction = async (fn: any) => {
+    mockTxImpl = async (fn: any) => {
       const mockTx = {
-        select: () => ({ from: () => ({ where: () => ({ limit: async () => [] }) }) }),
-        update: () => ({
-          set: () => ({
-            where: () => ({ returning: async () => [{ availableShares: 8 }] }),
-          }),
-        }),
-        insert: () => ({
-          values: (vals: any) => {
-            capturedInsert = vals;
-            const res = [{ shares: 2 }];
-            return Object.assign(Promise.resolve(res), {
-              returning: async () => res,
-            });
-          },
-        }),
+        select: () => {
+          return { from: () => ({ where: () => ({ limit: async () => [] }) }) };
+        },
+        update: () => {
+          return {
+            set: () => ({
+              where: () => ({ returning: async () => [{ availableShares: 8 }] }),
+            }),
+          };
+        },
+        insert: () => {
+          return {
+            values: (vals: any) => {
+              capturedInsert = vals;
+              const res = [{ shares: 2 }];
+              return Object.assign(Promise.resolve(res), {
+                returning: async () => res,
+              });
+            },
+          };
+        },
       };
       return fn(mockTx);
     };
 
-    (propertyRepository as any).findById = async () => ({
+    spyOn(propertyRepository, 'findById').mockResolvedValue({
       id: PROPERTY_ID,
       ownerId: OWNER_ADDRESS,
       availableShares: 10,
@@ -91,20 +99,26 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
       sorobanPropertyId: 1,
     } as any);
 
-    (userRepository as any).getOrCreateByWallet = async (walletAddress: string) => ({
+    spyOn(userRepository, 'getOrCreateByWallet').mockResolvedValue({
       id: 'buyer-id',
-      walletAddress,
+      walletAddress: BUYER_ADDRESS,
     } as any);
 
-    (userRepository as any).findById = async () => ({
+    spyOn(userRepository, 'findById').mockResolvedValue({
       id: 'owner-id',
       walletAddress: OWNER_ADDRESS,
     } as any);
 
-    const result = await PropertyController.buyShares(PROPERTY_ID, {
-      buyer: BUYER_ADDRESS,
-      shares: 2,
-    }, BUYER_ADDRESS);
+    let result: any;
+    try {
+      result = await PropertyController.buyShares(PROPERTY_ID, {
+        buyer: BUYER_ADDRESS,
+        shares: 2,
+      }, BUYER_ADDRESS);
+    } catch (error: any) {
+      console.error('BUY SHARES THREW ERROR:', error?.stack || error);
+      throw error;
+    }
 
     expect(result.transactionHash).toBe('a'.repeat(64));
     expect(result.newBalance).toBe(2);
@@ -132,12 +146,12 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
     };
 
     let dbTransactionCalled = false;
-    (db as any).transaction = async () => {
+    mockTxImpl = async () => {
       dbTransactionCalled = true;
       return { newBalance: 0 };
     };
 
-    (propertyRepository as any).findById = async () => ({
+    spyOn(propertyRepository, 'findById').mockResolvedValue({
       id: PROPERTY_ID,
       ownerId: OWNER_ADDRESS,
       availableShares: 10,
@@ -146,12 +160,12 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
       sorobanPropertyId: 1,
     } as any);
 
-    (userRepository as any).getOrCreateByWallet = async () => ({
+    spyOn(userRepository, 'getOrCreateByWallet').mockResolvedValue({
       id: 'buyer-id',
       walletAddress: BUYER_ADDRESS,
     } as any);
 
-    (userRepository as any).findById = async () => ({
+    spyOn(userRepository, 'findById').mockResolvedValue({
       id: 'owner-id',
       walletAddress: OWNER_ADDRESS,
     } as any);

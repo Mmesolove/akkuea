@@ -6,8 +6,8 @@ import { VALID_UUID, NON_EXISTENT_UUID } from '@real-estate-defi/shared';
 import { userRepository } from '../repositories/UserRepository';
 
 const skipIfNoDatabase = !process.env.DATABASE_URL;
-// Real Stellar address for KYC tests (must pass checksum validation)
-const TEST_WALLET = 'GCUEMLJWVYG7MUELRSWAP66D3LIUJ3UZNW4G3RD2LTKUVURGTNKGIITU';
+// Use a unique dummy address for KYC tests to avoid parallel test collisions with webhooks
+const TEST_WALLET = 'GAKYCTESTWALLETXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 const NON_EXISTENT_USER_ID = NON_EXISTENT_UUID;
 const NON_EXISTENT_DOC_ID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 

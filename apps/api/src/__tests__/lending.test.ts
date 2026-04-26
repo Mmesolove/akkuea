@@ -411,6 +411,9 @@ describe.skipIf(!process.env.DATABASE_URL)('Lending Integration Tests (DB requir
         body: JSON.stringify({ amount: '1000' }),
       }),
     );
+    if (response.status !== 200) {
+      console.error('LENDING DEPOSIT FAIL:', response.status, await response.text());
+    }
     expect(response.status).toBe(200);
     const position = await response.json();
     expect(position.poolId).toBe(testPoolId);
@@ -440,6 +443,9 @@ describe.skipIf(!process.env.DATABASE_URL)('Lending Integration Tests (DB requir
         }),
       }),
     );
+    if (response.status !== 200) {
+      console.error('LENDING BORROW FAIL:', response.status, await response.text());
+    }
     expect(response.status).toBe(200);
     const position = await response.json();
     expect(position.poolId).toBe(testPoolId);
@@ -484,6 +490,9 @@ describe.skipIf(!process.env.DATABASE_URL)('Lending Integration Tests (DB requir
     const response = await app.handle(
       new Request(`http://localhost/lending/pools/${testPoolId}/user/${TEST_WALLET}/summary`),
     );
+    if (response.status !== 200) {
+      console.error('LENDING SUMMARY FAIL:', response.status, await response.text());
+    }
     expect(response.status).toBe(200);
     const summary = await response.json();
     expect(summary.poolId).toBe(testPoolId);
