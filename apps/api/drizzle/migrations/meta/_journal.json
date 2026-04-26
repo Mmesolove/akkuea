@@ -12,15 +12,29 @@
     {
       "idx": 1,
       "version": "7",
-      "when": 1742832000000,
-      "tag": "0002_property_review_operations",
+      "when": 1769110547237,
+      "tag": "0001_add_soroban_property_id",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
+      "when": 1742832000000,
+      "tag": "0002_property_review_operations",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1742832000001,
+      "tag": "0003_notifications_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
       "when": 1745401031214,
-      "tag": "0003_add_valuations_table",
+      "tag": "0004_add_valuations_table",
       "breakpoints": true
     }
   ]
