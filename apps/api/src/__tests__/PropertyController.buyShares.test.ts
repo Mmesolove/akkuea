@@ -56,7 +56,25 @@ describe('PropertyController.buyShares', () => {
       };
     };
 
-    (db as any).transaction = async () => ({ newBalance: 42 });
+    let capturedInsert: any = {};
+
+    (db as any).transaction = async (fn: any) => {
+      const mockTx = {
+        select: () => ({ from: () => ({ where: () => ({ limit: async () => [] }) }) }),
+        update: () => ({
+          set: () => ({
+            where: () => ({ returning: async () => [{ availableShares: 8 }] }),
+          }),
+        }),
+        insert: () => ({
+          values: async (vals: any) => {
+            capturedInsert = vals;
+            return [{ shares: 2 }];
+          },
+        }),
+      };
+      return fn(mockTx);
+    };
 
     (propertyRepository as any).findById = async () => ({
       id: PROPERTY_ID,
@@ -83,7 +101,7 @@ describe('PropertyController.buyShares', () => {
     }, BUYER_ADDRESS);
 
     expect(result.transactionHash).toBe('a'.repeat(64));
-    expect(result.newBalance).toBe(42);
+    expect(result.newBalance).toBe(2);
     expect(mintParams).toEqual({
       contractId: CONTRACT_ID,
       adminPublicKey: ADMIN_PUBLIC_KEY,
@@ -92,6 +110,8 @@ describe('PropertyController.buyShares', () => {
       recipient: BUYER_ADDRESS,
       amount: 2,
     });
+    expect(capturedInsert.hash).toBe('a'.repeat(64));
+    expect(capturedInsert.status).toBe('confirmed');
   });
 
   it('does not persist a pending transaction when Soroban submission fails', async () => {

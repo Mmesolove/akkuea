@@ -651,7 +651,7 @@ export class PropertyController {
           toUserId: propertyOwnerId,
           amount: totalPurchasePrice,
           asset: propertyTokenAddress ?? 'USDC',
-          status: 'pending',
+          status: 'confirmed',
           metadata: {
             propertyId: propertyId,
             shares: data.shares,
