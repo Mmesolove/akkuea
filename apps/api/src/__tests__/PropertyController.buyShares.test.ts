@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it } from 'bun:test';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import { PropertyController } from '../controllers/PropertyController';
 import { stellarService } from '../services/StellarService';
 import { db } from '../db';
@@ -12,12 +13,12 @@ const CONTRACT_ID = 'CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 const ADMIN_PUBLIC_KEY = 'GADMINADDRESSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 const ADMIN_SECRET = 'SADMINSECRETXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 
-let originalMintPropertyShares: typeof stellarService.mintPropertyShares;
-let originalGetMintingConfig: typeof stellarService.getMintingConfig;
-let originalDbTransaction: typeof db.transaction;
-let originalPropertyFindById: typeof propertyRepository.findById;
-let originalGetOrCreateByWallet: typeof userRepository.getOrCreateByWallet;
-let originalUserFindById: typeof userRepository.findById;
+let originalMintPropertyShares: any;
+let originalGetMintingConfig: any;
+let originalDbTransaction: any;
+let originalPropertyFindById: any;
+let originalGetOrCreateByWallet: any;
+let originalUserFindById: any;
 
 beforeEach(() => {
   originalMintPropertyShares = stellarService.mintPropertyShares;
@@ -29,35 +30,35 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  stellarService.mintPropertyShares = originalMintPropertyShares;
-  stellarService.getMintingConfig = originalGetMintingConfig;
-  db.transaction = originalDbTransaction;
-  propertyRepository.findById = originalPropertyFindById;
-  userRepository.getOrCreateByWallet = originalGetOrCreateByWallet;
-  userRepository.findById = originalUserFindById;
+  (stellarService as any).mintPropertyShares = originalMintPropertyShares;
+  (stellarService as any).getMintingConfig = originalGetMintingConfig;
+  (db as any).transaction = originalDbTransaction;
+  (propertyRepository as any).findById = originalPropertyFindById;
+  (userRepository as any).getOrCreateByWallet = originalGetOrCreateByWallet;
+  (userRepository as any).findById = originalUserFindById;
 });
 
 describe('PropertyController.buyShares', () => {
   it('submits a real Soroban transaction and returns the Horizon hash', async () => {
-    let mintParams: Record<string, unknown> | null = null;
+    let mintParams: any = {};
 
-    stellarService.getMintingConfig = () => ({
+    (stellarService as any).getMintingConfig = () => ({
       contractId: CONTRACT_ID,
       adminPublicKey: ADMIN_PUBLIC_KEY,
       adminSecret: ADMIN_SECRET,
     });
 
-    stellarService.mintPropertyShares = async (params) => {
-      mintParams = params as Record<string, unknown>;
+    (stellarService as any).mintPropertyShares = async (params: any) => {
+      mintParams = params;
       return {
         txHash: 'a'.repeat(64),
         contractId: params.contractId,
       };
     };
 
-    db.transaction = async () => ({ newBalance: 42 });
+    (db as any).transaction = async () => ({ newBalance: 42 });
 
-    propertyRepository.findById = async () => ({
+    (propertyRepository as any).findById = async () => ({
       id: PROPERTY_ID,
       ownerId: OWNER_ADDRESS,
       availableShares: 10,
@@ -66,12 +67,12 @@ describe('PropertyController.buyShares', () => {
       sorobanPropertyId: 1,
     } as any);
 
-    userRepository.getOrCreateByWallet = async (walletAddress) => ({
+    (userRepository as any).getOrCreateByWallet = async (walletAddress: string) => ({
       id: 'buyer-id',
       walletAddress,
     } as any);
 
-    userRepository.findById = async () => ({
+    (userRepository as any).findById = async () => ({
       id: 'owner-id',
       walletAddress: OWNER_ADDRESS,
     } as any);
@@ -94,23 +95,23 @@ describe('PropertyController.buyShares', () => {
   });
 
   it('does not persist a pending transaction when Soroban submission fails', async () => {
-    stellarService.getMintingConfig = () => ({
+    (stellarService as any).getMintingConfig = () => ({
       contractId: CONTRACT_ID,
       adminPublicKey: ADMIN_PUBLIC_KEY,
       adminSecret: ADMIN_SECRET,
     });
 
-    stellarService.mintPropertyShares = async () => {
+    (stellarService as any).mintPropertyShares = async () => {
       throw new Error('Soroban submission failed');
     };
 
     let dbTransactionCalled = false;
-    db.transaction = async () => {
+    (db as any).transaction = async () => {
       dbTransactionCalled = true;
       return { newBalance: 0 };
     };
 
-    propertyRepository.findById = async () => ({
+    (propertyRepository as any).findById = async () => ({
       id: PROPERTY_ID,
       ownerId: OWNER_ADDRESS,
       availableShares: 10,
@@ -119,12 +120,12 @@ describe('PropertyController.buyShares', () => {
       sorobanPropertyId: 1,
     } as any);
 
-    userRepository.getOrCreateByWallet = async () => ({
+    (userRepository as any).getOrCreateByWallet = async () => ({
       id: 'buyer-id',
       walletAddress: BUYER_ADDRESS,
     } as any);
 
-    userRepository.findById = async () => ({
+    (userRepository as any).findById = async () => ({
       id: 'owner-id',
       walletAddress: OWNER_ADDRESS,
     } as any);
