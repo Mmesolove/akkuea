@@ -15,6 +15,7 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
   const buyerAddress = 'GBUYERADDRESSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
   let propertyId: string;
   let buyerId: string;
+  let propertySorobanId: number;
 
   let originalMintPropertyShares: any;
   let originalGetMintingConfig: any;
@@ -42,10 +43,12 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
       ownerId: owner.id,
     });
     
+    propertySorobanId = await propertyRepository.allocateSorobanPropertyId();
+
     // Tokenize it so we can buy shares
     await db.update(properties).set({
       tokenAddress: 'CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-      sorobanPropertyId: 1
+      sorobanPropertyId: propertySorobanId
     }).where(eq(properties.id, prop.id));
     
     propertyId = prop.id;
@@ -90,7 +93,7 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
       contractId: 'CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
       adminPublicKey: 'GADMINADDRESSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
       adminSecret: 'SADMINSECRETXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-      sorobanPropertyId: 1,
+      sorobanPropertyId: propertySorobanId,
       recipient: buyerAddress,
       amount: 2,
     });
