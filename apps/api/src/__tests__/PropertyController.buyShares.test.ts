@@ -100,11 +100,13 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
     expect(prop!.availableShares).toBe(8);
     
     const [ownership] = await db.select().from(shareOwnerships).where(and(eq(shareOwnerships.propertyId, propertyId), eq(shareOwnerships.ownerId, buyerId)));
-    expect(ownership.shares).toBe(2);
+    expect(ownership).toBeDefined();
+    expect(ownership!.shares).toBe(2);
 
     const [tx] = await db.select().from(transactions).where(eq(transactions.hash, 'a'.repeat(64)));
-    expect(tx.status).toBe('confirmed');
-    expect(tx.amount).toBe('200.00'); // 2 shares * 100.00
+    expect(tx).toBeDefined();
+    expect(tx!.status).toBe('confirmed');
+    expect(tx!.amount).toBe('200.00'); // 2 shares * 100.00
   });
 
   it('does not persist a pending transaction when Soroban submission fails', async () => {
