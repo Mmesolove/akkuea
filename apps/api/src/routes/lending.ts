@@ -1,6 +1,6 @@
 import { Elysia } from 'elysia';
 import { z } from 'zod';
-import { validate, uuidParamSchema, paginationQuerySchema, rateLimit } from '../middleware';
+import { validate, uuidParamSchema, paginationQuerySchema, rateLimit, authPlugin } from '../middleware';
 import { LendingController } from '../controllers/LendingController';
 import { positionService } from '../services/PositionService';
 import { isLiquidatorAuthorized } from '../utils/liquidatorAuth';
@@ -70,22 +70,38 @@ const createPoolSchema = z.object({
 });
 
 export const lendingRoutes = new Elysia({ prefix: '/lending' })
+  // PUBLIC ROUTES
   // GET /pools - List pools with pagination and filters
   .use(validate({ query: poolQuerySchema }))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .get('/pools', async (ctx: any) => LendingController.getPools(ctx))
 
-  // POST /pools - Create pool (auth required)
-  .use(validate({ body: createPoolSchema }))
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .post('/pools', async (ctx: any) => LendingController.createPool(ctx), {
-    beforeHandle: [rateLimit()],
-  })
 
   // GET /pools/:id - Get single pool
   .use(validate({ params: poolIdParamSchema }))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .get('/pools/:id', async (ctx: any) => LendingController.getPool(ctx))
+
+  // GET /pools/:id/user/:address/deposits - Get user deposits
+  .use(validate({ params: poolUserParamsSchema }))
+  .get('/pools/:id/user/:address/deposits', async (ctx) => LendingController.getUserDeposits(ctx))
+
+  // GET /pools/:id/user/:address/borrows - Get user borrows
+  .use(validate({ params: poolUserParamsSchema }))
+  .get('/pools/:id/user/:address/borrows', async (ctx) => LendingController.getUserBorrows(ctx))
+
+  // GET /pools/:id/user/:address/summary - Get user position summary
+  .use(validate({ params: poolUserParamsSchema }))
+  .get('/pools/:id/user/:address/summary', async (ctx) =>
+    LendingController.getUserPositionSummary(ctx),
+  )
+
+  // PROTECTED ROUTES
+  .use(authPlugin)
+
+  // POST /pools - Create pool (auth required)
+  .use(validate({ body: createPoolSchema }))
+  .post('/pools', async (ctx) => LendingController.createPool(ctx), { beforeHandle: [rateLimit()] })
 
   // POST /pools/:id/deposit - Deposit into pool (auth required)
   .use(validate({ body: depositSchema }))
@@ -114,27 +130,6 @@ export const lendingRoutes = new Elysia({ prefix: '/lending' })
   .post('/pools/:id/repay', async (ctx: any) => LendingController.repay(ctx), {
     beforeHandle: [rateLimit()],
   })
-
-  // GET /pools/:id/user/:address/deposits - Get user deposits
-  .use(validate({ params: poolUserParamsSchema }))
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .get('/pools/:id/user/:address/deposits', async (ctx: any) =>
-    LendingController.getUserDeposits(ctx),
-  )
-
-  // GET /pools/:id/user/:address/borrows - Get user borrows
-  .use(validate({ params: poolUserParamsSchema }))
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .get('/pools/:id/user/:address/borrows', async (ctx: any) =>
-    LendingController.getUserBorrows(ctx),
-  )
-
-  // GET /pools/:id/user/:address/summary - Get user position summary
-  .use(validate({ params: poolUserParamsSchema }))
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .get('/pools/:id/user/:address/summary', async (ctx: any) =>
-    LendingController.getUserPositionSummary(ctx),
-  )
 
   // POST /pools/:id/positions/:borrowerId/liquidate - Execute liquidation (liquidator role required)
   .use(liquidatorAuth)

@@ -8,6 +8,7 @@ import {
   paginationQuerySchema,
   ownerParamSchema,
   rateLimit,
+  authPlugin,
 } from '../middleware';
 import { PropertyController } from '../controllers/PropertyController';
 import { handleError, UnauthorizedError } from '../utils/errors';
@@ -77,12 +78,12 @@ const getPropertyRoute = new Elysia()
   });
 
 // POST /properties - create property
-const createPropertyRoute = new Elysia().use(validateBody(createPropertySchema)).post(
+const createPropertyRoute = new Elysia().use(authPlugin).use(validateBody(createPropertySchema)).post(
   '/',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async ({ validatedBody, headers, set }: any) => {
+  async ({ validatedBody, set, getAuthenticatedUser }: any) => {
     try {
-      const userAddress = headers['x-user-address'] as string | undefined;
+      const { walletAddress: userAddress } = await getAuthenticatedUser();
       if (!userAddress) {
         throw new UnauthorizedError('User address is required for authentication');
       }
@@ -98,12 +99,13 @@ const createPropertyRoute = new Elysia().use(validateBody(createPropertySchema))
 
 // PUT /properties/:id - update property
 const updatePropertyRoute = new Elysia()
+  .use(authPlugin)
   .use(validateParams(uuidParamSchema))
   .use(validateBody(updatePropertySchema))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .put('/:id', async ({ validatedParams, validatedBody, headers, set }: any) => {
+  .put('/:id', async ({ validatedParams, validatedBody, set, getAuthenticatedUser }: any) => {
     try {
-      const userAddress = headers['x-user-address'] as string;
+      const { walletAddress: userAddress } = await getAuthenticatedUser();
       if (!userAddress) {
         throw new UnauthorizedError('User address is required for authentication');
       }
@@ -121,11 +123,12 @@ const updatePropertyRoute = new Elysia()
 
 // DELETE /properties/:id - delete property
 const deletePropertyRoute = new Elysia()
+  .use(authPlugin)
   .use(validateParams(uuidParamSchema))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .delete('/:id', async ({ validatedParams, headers, set }: any) => {
+  .delete('/:id', async ({ validatedParams, set, getAuthenticatedUser }: any) => {
     try {
-      const userAddress = headers['x-user-address'] as string;
+      const { walletAddress: userAddress } = await getAuthenticatedUser();
       if (!userAddress) {
         throw new UnauthorizedError('User address is required for authentication');
       }
@@ -138,12 +141,12 @@ const deletePropertyRoute = new Elysia()
   });
 
 // POST /properties/:id/tokenize - tokenize property
-const tokenizePropertyRoute = new Elysia().use(validateParams(uuidParamSchema)).post(
+const tokenizePropertyRoute = new Elysia().use(authPlugin).use(validateParams(uuidParamSchema)).post(
   '/:id/tokenize',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async ({ validatedParams, body, headers, set }: any) => {
+  async ({ validatedParams, body, set, getAuthenticatedUser }: any) => {
     try {
-      const userAddress = headers['x-user-address'] as string | undefined;
+      const { walletAddress: userAddress } = await getAuthenticatedUser();
       return await PropertyController.tokenizeProperty(
         validatedParams!.id,
         body as unknown,
@@ -160,14 +163,15 @@ const tokenizePropertyRoute = new Elysia().use(validateParams(uuidParamSchema)).
 
 // POST /properties/:id/buy-shares - buy property shares
 const buySharesRoute = new Elysia()
+  .use(authPlugin)
   .use(validateParams(uuidParamSchema))
   .use(validateBody(buySharesSchema))
   .post(
     '/:id/buy-shares',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async ({ validatedParams, validatedBody, headers, set }: any) => {
+    async ({ validatedParams, validatedBody, set, getAuthenticatedUser }: any) => {
       try {
-        const userAddress = headers['x-user-address'] as string | undefined;
+        const { walletAddress: userAddress } = await getAuthenticatedUser();
         if (!userAddress) {
           throw new UnauthorizedError('User address is required for authentication');
         }

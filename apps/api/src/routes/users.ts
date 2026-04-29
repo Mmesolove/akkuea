@@ -1,6 +1,6 @@
 import { Elysia } from 'elysia';
 import { z } from 'zod';
-import { validate, uuidParamSchema, rateLimit } from '../middleware';
+import { validate, uuidParamSchema, rateLimit, authPlugin } from '../middleware';
 import { UserController } from '../controllers/UserController';
 
 const walletParamSchema = z.object({
@@ -34,14 +34,6 @@ export const userRoutes = new Elysia({ prefix: '/users' })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .post('/', async (ctx: any) => UserController.create(ctx))
 
-  // GET /users/me - Get current user profile
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .get('/me', async (ctx: any) => UserController.getProfile(ctx))
-
-  // PATCH /users/me - Update current user profile
-  .use(validate({ body: updateUserSchema }))
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .patch('/me', async (ctx: any) => UserController.updateProfile(ctx))
 
   // GET /users/:id - Get user by ID
   .use(validate({ params: uuidParamSchema }))
@@ -58,4 +50,13 @@ export const userRoutes = new Elysia({ prefix: '/users' })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .post('/auth', async (ctx: any) => UserController.authenticateByWallet(ctx), {
     beforeHandle: [rateLimit()],
-  });
+  })
+  
+  // Protected Routes
+  .use(authPlugin)
+  // GET /users/me - Get current user profile
+  .get('/me', async (ctx) => UserController.getProfile(ctx))
+
+  // PATCH /users/me - Update current user profile
+  .use(validate({ body: updateUserSchema }))
+  .patch('/me', async (ctx) => UserController.updateProfile(ctx));
