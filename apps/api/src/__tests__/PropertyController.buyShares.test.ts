@@ -14,7 +14,6 @@ mock.module('../db', () => ({
 
 import { PropertyController } from '../controllers/PropertyController';
 import { stellarService } from '../services/StellarService';
-import { db } from '../db';
 import { propertyRepository } from '../repositories/PropertyRepository';
 import { userRepository } from '../repositories/UserRepository';
 
