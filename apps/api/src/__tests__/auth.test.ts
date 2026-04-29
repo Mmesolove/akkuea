@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'bun:test';
+import { describe, expect, it, beforeEach, afterEach } from 'bun:test';
 import { Elysia } from 'elysia';
 import { authRoutes } from '../routes/auth';
 import { Keypair } from 'stellar-sdk';
@@ -21,16 +21,17 @@ describe('Auth Routes Integration Tests', () => {
 
   let keypair: Keypair;
   let stellarAddress: string;
+  let getOrCreateByWalletSpy: ReturnType<typeof spyOn>;
 
   beforeEach(() => {
     keypair = Keypair.random();
     stellarAddress = keypair.publicKey();
     // Clear any leftover challenges between tests
     challengeStore.clear();
-    spyOn(userRepository, 'getOrCreateByWallet').mockImplementation(
+    getOrCreateByWalletSpy = spyOn(userRepository, 'getOrCreateByWallet').mockImplementation(
       async (address) =>
         ({
-          id: 'mock-user-id',
+          id: '11111111-1111-1111-1111-111111111111',
           walletAddress: address,
           displayName: 'Mock User',
           createdAt: new Date(),
@@ -38,6 +39,10 @@ describe('Auth Routes Integration Tests', () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any,
     );
+  });
+
+  afterEach(() => {
+    getOrCreateByWalletSpy.mockRestore();
   });
 
   it('POST /auth/challenge should return a nonce', async () => {
