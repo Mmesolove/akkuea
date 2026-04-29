@@ -13,6 +13,7 @@ const skipIfNoDatabase = !process.env.DATABASE_URL;
 describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
   const propertyOwnerAddress = 'GOWNERADDRESSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
   const buyerAddress = 'GBUYERADDRESSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+  const purchaseTxHash = 'd'.repeat(64);
   let propertyId: string;
   let buyerId: string;
   let propertySorobanId: number;
@@ -79,7 +80,7 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
     (stellarService as any).mintPropertyShares = async (params: any) => {
       mintParams = params;
       return {
-        txHash: 'a'.repeat(64),
+        txHash: purchaseTxHash,
         contractId: params.contractId,
       };
     };
@@ -93,7 +94,7 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
       buyerAddress,
     );
 
-    expect(result.transactionHash).toBe('a'.repeat(64));
+    expect(result.transactionHash).toBe(purchaseTxHash);
     expect(result.newBalance).toBe(2);
 
     expect(mintParams).toEqual({
@@ -116,13 +117,10 @@ describe.skipIf(skipIfNoDatabase)('PropertyController.buyShares', () => {
     expect(ownership).toBeDefined();
     expect(ownership!.shares).toBe(2);
 
-    const [tx] = await db
-      .select()
-      .from(transactions)
-      .where(eq(transactions.hash, 'a'.repeat(64)));
+    const [tx] = await db.select().from(transactions).where(eq(transactions.hash, purchaseTxHash));
     expect(tx).toBeDefined();
     expect(tx!.status).toBe('confirmed');
-    expect(tx!.amount).toBe('200.00'); // 2 shares * 100.00
+    expect(parseFloat(tx!.amount)).toBe(200); // 2 shares * 100.00
   });
 
   it('does not persist a pending transaction when Soroban submission fails', async () => {
