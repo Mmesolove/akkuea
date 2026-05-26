@@ -1,4 +1,4 @@
-# Authentication Flow — Stellar Wallet Challenge-Response
+# Authentication Flow - Stellar Wallet Challenge-Response
 
 ## Overview
 
@@ -9,7 +9,7 @@ The Akkuea API uses a **challenge-response authentication flow** that leverages 
 - Users prove they own a Stellar wallet by signing a server-issued nonce
 - The server verifies the Ed25519 signature using the Stellar public key
 - A short-lived JWT is issued upon successful verification
-- All protected routes validate the JWT — no raw headers are trusted
+- All protected routes validate the JWT - no raw headers are trusted
 
 ---
 
@@ -214,8 +214,8 @@ All the following routes require a valid JWT in the `Authorization` header:
 
 ### Nonce Lifecycle
 
-- Each nonce is **single-use** — it is deleted from the store after successful verification
-- Nonces expire after **5 minutes** — expired nonces are rejected and cleaned up
+- Each nonce is **single-use** - it is deleted from the store after successful verification
+- Nonces expire after **5 minutes** - expired nonces are rejected and cleaned up
 - A new challenge for the same address **overwrites** the previous one
 
 ### Signature Verification
@@ -235,10 +235,10 @@ All the following routes require a valid JWT in the `Authorization` header:
 
 ### Recommendations for Production
 
-1. **Set `JWT_SECRET`** — The default development secret must be replaced with a cryptographically strong random value via the `JWT_SECRET` environment variable
-2. **Use HTTPS** — JWTs are bearer tokens; transmit them only over TLS
-3. **Token rotation** — Consider implementing refresh tokens for long-lived sessions
-4. **Challenge store** — The current in-memory store does not survive restarts. For multi-instance deployments, use Redis or a similar shared store
+1. **Set `JWT_SECRET`** - The default development secret must be replaced with a cryptographically strong random value via the `JWT_SECRET` environment variable
+2. **Use HTTPS** - JWTs are bearer tokens; transmit them only over TLS
+3. **Token rotation** - Consider implementing refresh tokens for long-lived sessions
+4. **Challenge store** - The current in-memory store does not survive restarts. For multi-instance deployments, use Redis or a similar shared store
 
 ---
 

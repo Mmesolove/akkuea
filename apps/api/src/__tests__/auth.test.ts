@@ -155,7 +155,7 @@ describe('Auth Routes Integration Tests', () => {
     const signatureBuffer = keypair.sign(Buffer.from(nonce));
     const signature = signatureBuffer.toString('base64');
 
-    // 4. Attempt to create session — should reject as expired
+    // 4. Attempt to create session - should reject as expired
     const sessionRes = await app.handle(
       new Request('http://localhost/auth/session', {
         method: 'POST',
@@ -180,7 +180,7 @@ describe('Auth Routes Integration Tests', () => {
     );
     const { nonce } = (await challengeRes.json()) as { nonce: string };
 
-    // 2. Sign and verify (first use — should succeed)
+    // 2. Sign and verify (first use - should succeed)
     const signatureBuffer = keypair.sign(Buffer.from(nonce));
     const signature = signatureBuffer.toString('base64');
 
@@ -193,7 +193,7 @@ describe('Auth Routes Integration Tests', () => {
     );
     expect(firstRes.status).toBe(200);
 
-    // 3. Attempt to reuse the same nonce — should fail
+    // 3. Attempt to reuse the same nonce - should fail
     const secondRes = await app.handle(
       new Request('http://localhost/auth/session', {
         method: 'POST',

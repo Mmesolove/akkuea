@@ -89,7 +89,7 @@ export function useTransactions(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchKey, filterKey]);
 
-  /** Load more — appends next page */
+  /** Load more - appends next page */
   const loadMore = useCallback(() => {
     if (!isLoading && hasMore && cursor) {
       fetchPage(cursor, true);

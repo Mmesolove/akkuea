@@ -434,7 +434,7 @@ export function PropertyOperationsWorkspace({
                       {detail.valuation.record?.price != null && (
                         <span className="text-zinc-500">
                           {" "}
-                          — {formatCurrency(detail.valuation.record.price)}{" "}
+                          - {formatCurrency(detail.valuation.record.price)}{" "}
                           {detail.valuation.record.currency}
                         </span>
                       )}
@@ -450,7 +450,7 @@ export function PropertyOperationsWorkspace({
                       <span className="text-zinc-500">Last reviewer: </span>
                       {detail.audit.lastActorWallet
                         ? truncateAddress(detail.audit.lastActorWallet)
-                        : "—"}
+                        : "-"}
                       {detail.audit.lastActionAt && (
                         <span className="text-zinc-600">
                           {" "}

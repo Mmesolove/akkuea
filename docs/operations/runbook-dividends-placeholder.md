@@ -1,8 +1,8 @@
 # Runbook: Dividend & Cashflow Distribution
 
-**Status: PLACEHOLDER — Pending Issue #722**
+**Status: PLACEHOLDER - Pending Issue #722**
 
-> This document is a structural reservation. The Dividend and Cashflow Distribution workflow does not yet exist in the codebase. It will be implemented and merged as part of [Issue #722 — Dividend & Cashflow Distribution](https://github.com/akkuea/akkuea/issues/722).
+> This document is a structural reservation. The Dividend and Cashflow Distribution workflow does not yet exist in the codebase. It will be implemented and merged as part of [Issue #722 - Dividend & Cashflow Distribution](https://github.com/akkuea/akkuea/issues/722).
 >
 > **When Issue #722 is merged:** delete this notice block and replace the sections below with the actual implementation details, CLI commands, and failure modes. Follow the same format as `runbook-emergency-pause.md`.
 
@@ -76,14 +76,14 @@ The following failure modes are anticipated for the dividend workflow. Detail th
 |---|---|---|
 | Snapshot timing attack | On-chain | Malicious flash-acquisition of shares before snapshot ledger to inflate dividend claim |
 | Unclaimed dividend accumulation | Operations | Funds locked in contract indefinitely if claimants never call `claim_dividend` |
-| Asset mismatch | Integration | Distribution asset differs from the pool asset — payout in wrong token |
-| Oracle dependency for USD-denominated distributions | On-chain | If distributions are expressed in USD, oracle price is required — inherits RISK-001 from audit |
+| Asset mismatch | Integration | Distribution asset differs from the pool asset - payout in wrong token |
+| Oracle dependency for USD-denominated distributions | On-chain | If distributions are expressed in USD, oracle price is required - inherits RISK-001 from audit |
 
 ---
 
 ## References
 
-- [Issue #722 — Dividend & Cashflow Distribution](https://github.com/akkuea/akkuea/issues/722) — implementation tracking
-- `docs/operations/runbook-emergency-pause.md` — if a distribution event triggers anomalous behavior, pause procedure applies
-- `docs/api/minting-workflow.md` — share ownership context
-- `docs/api/kyc-workflow.md` — investor eligibility context
+- [Issue #722 - Dividend & Cashflow Distribution](https://github.com/akkuea/akkuea/issues/722) - implementation tracking
+- `docs/operations/runbook-emergency-pause.md` - if a distribution event triggers anomalous behavior, pause procedure applies
+- `docs/api/minting-workflow.md` - share ownership context
+- `docs/api/kyc-workflow.md` - investor eligibility context

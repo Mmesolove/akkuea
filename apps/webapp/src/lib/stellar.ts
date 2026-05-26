@@ -14,7 +14,7 @@ interface AccountRecord {
   balances: BalanceLine[];
 }
 
-/** Minimal Horizon server interface — satisfied by Horizon.Server and injectable mocks */
+/** Minimal Horizon server interface - satisfied by Horizon.Server and injectable mocks */
 export interface HorizonServerLike {
   loadAccount(address: string): Promise<AccountRecord>;
 }

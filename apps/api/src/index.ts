@@ -57,7 +57,7 @@ app
 console.log(`🚀 Real Estate DeFi API is running on port ${process.env.PORT || 3001}`);
 console.log(`📚 Swagger docs available at http://localhost:${process.env.PORT || 3001}/swagger`);
 
-// Connect to Redis (non-blocking — app works without it)
+// Connect to Redis (non-blocking - app works without it)
 cacheService.connect();
 
 // Start the notification delivery worker (opt-out via NOTIFICATIONS_ENABLED=false)

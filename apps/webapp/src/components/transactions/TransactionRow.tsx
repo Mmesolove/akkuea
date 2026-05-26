@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui";
 import { formatCurrency, getExplorerUrl } from "@/lib/utils";
 import { useWallet } from "@/components/auth/hooks";
 
-/** Config for each transaction type — icon, colour, label */
+/** Config for each transaction type - icon, colour, label */
 const TYPE_CONFIG: Record<
   Transaction["type"],
   {

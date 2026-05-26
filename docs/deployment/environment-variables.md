@@ -49,7 +49,7 @@ cp akkuea-defi-rwa/apps/api/.env.example akkuea-defi-rwa/apps/api/.env
 |---|---|---|---|
 | `KYC_UPLOAD_DIR` | `/var/akkuea/kyc-uploads` | Yes | Absolute path on the server where KYC document files are stored. The API process must have read/write access to this directory |
 
-### Stellar / Soroban — Network
+### Stellar / Soroban - Network
 
 | Variable | Example Value | Required | Description |
 |---|---|---|---|
@@ -57,9 +57,9 @@ cp akkuea-defi-rwa/apps/api/.env.example akkuea-defi-rwa/apps/api/.env
 | `STELLAR_RPC_URL` | `https://soroban-testnet.stellar.org` | Yes | Soroban RPC endpoint for contract invocations. Use `https://soroban.stellar.org` for mainnet |
 | `STELLAR_NETWORK_PASSPHRASE` | `Test SDF Network ; September 2015` | Yes | Network identifier embedded in every transaction signature. **Wrong passphrase = invalid transactions.** Mainnet value: `Public Global Stellar Network ; September 2015` |
 
-### Stellar / Soroban — Admin Identity
+### Stellar / Soroban - Admin Identity
 
-> **SECURITY WARNING — `STELLAR_ADMIN_SECRET`**
+> **SECURITY WARNING - `STELLAR_ADMIN_SECRET`**
 >
 > This is the private key of the account that controls the entire protocol. It has the authority to:
 > - Mint and burn shares (`mint_shares`, `burn_shares`)
@@ -77,7 +77,7 @@ cp akkuea-defi-rwa/apps/api/.env.example akkuea-defi-rwa/apps/api/.env
 | `STELLAR_ADMIN_PUBLIC_KEY` | `GXXX...` (56 chars, starts with `G`) | Yes | The public key of the admin account. Safe to expose; used to verify identity |
 | `STELLAR_ADMIN_SECRET` | `SXXX...` (56 chars, starts with `S`) | Yes | **The admin private key.** See security warning above. Used by `StellarService` to sign all admin transactions |
 
-### Stellar / Soroban — Contracts
+### Stellar / Soroban - Contracts
 
 | Variable | Example Value | Required | Description |
 |---|---|---|---|
@@ -93,7 +93,7 @@ cp akkuea-defi-rwa/apps/api/.env.example akkuea-defi-rwa/apps/api/.env
 | Mainnet | `Public Global Stellar Network ; September 2015` |
 | Local (Quickstart) | `Standalone Network ; February 2017` |
 
-Note the space before the semicolons — the passphrase must match exactly.
+Note the space before the semicolons - the passphrase must match exactly.
 
 ---
 

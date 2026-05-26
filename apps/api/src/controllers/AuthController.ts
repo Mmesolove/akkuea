@@ -5,7 +5,7 @@ import { userRepository } from '../repositories/UserRepository';
 
 // In-memory store for challenges (nonce)
 // Format: Map<stellarAddress, { nonce: string, expiresAt: number }>
-/** @internal Exported for test access only — do not use outside of test suites. */
+/** @internal Exported for test access only - do not use outside of test suites. */
 export const challengeStore = new Map<string, { nonce: string; expiresAt: number }>();
 
 const CHALLENGE_EXPIRATION_MS = 1000 * 60 * 5; // 5 minutes

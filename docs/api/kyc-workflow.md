@@ -1,19 +1,19 @@
 # KYC Workflow: Off-Chain Compliance
 
-Akkuea's compliance layer is entirely off-chain. There are no whitelist addresses on the Soroban contract — investor eligibility is controlled through a state machine stored in PostgreSQL and enforced (or intended to be enforced) at the API layer.
+Akkuea's compliance layer is entirely off-chain. There are no whitelist addresses on the Soroban contract - investor eligibility is controlled through a state machine stored in PostgreSQL and enforced (or intended to be enforced) at the API layer.
 
 **Key files:**
-- `apps/api/src/controllers/KYCController.ts` — all KYC business logic
-- `apps/api/src/repositories/KYCRepository.ts` — database operations
-- `apps/api/src/routes/kyc.ts` — HTTP endpoints
-- `apps/api/src/db/schema/users.ts` — `users.kycStatus` column
-- `apps/api/src/db/schema/kyc.ts` — `kycDocuments` table
+- `apps/api/src/controllers/KYCController.ts` - all KYC business logic
+- `apps/api/src/repositories/KYCRepository.ts` - database operations
+- `apps/api/src/routes/kyc.ts` - HTTP endpoints
+- `apps/api/src/db/schema/users.ts` - `users.kycStatus` column
+- `apps/api/src/db/schema/kyc.ts` - `kycDocuments` table
 
 ---
 
 ## The 'Admin as Oracle' pattern
 
-KYC in this system works like a manual oracle: an off-chain human operator (the admin) observes uploaded documents and decides whether to approve or reject them. The system has no automated identity verification provider — the admin IS the compliance decision-maker.
+KYC in this system works like a manual oracle: an off-chain human operator (the admin) observes uploaded documents and decides whether to approve or reject them. The system has no automated identity verification provider - the admin IS the compliance decision-maker.
 
 ```
   Investor (user)          Platform Admin              Database
@@ -249,7 +249,7 @@ Until this guard is implemented, KYC approval is advisory, not enforced.
 
 ## Audit & Compliance Logging
 
-> **Stability Note — Issue #725:** Structured audit logging, tamper-evident event trails, and compliance export utilities for KYC actions are currently under design and development in [Issue #725 — Audit Log Models & Compliance Export](https://github.com/akkuea/akkuea/issues/725). The section below documents the **current** logging state. This section will be expanded significantly once Issue #725 is merged.
+> **Stability Note - Issue #725:** Structured audit logging, tamper-evident event trails, and compliance export utilities for KYC actions are currently under design and development in [Issue #725 - Audit Log Models & Compliance Export](https://github.com/akkuea/akkuea/issues/725). The section below documents the **current** logging state. This section will be expanded significantly once Issue #725 is merged.
 
 ### Current logging state
 
@@ -260,7 +260,7 @@ Events that currently emit log entries:
 | Action | Log level | Fields logged |
 |---|---|---|
 | Document uploaded | `info` (implicit via `uploadDocument`) | `userId`, `documentType`, `documentId` |
-| Document verified (approved/rejected) | `info` / `error` not explicitly logged in `verifyDocument` | *(no explicit audit log call — see gap below)* |
+| Document verified (approved/rejected) | `info` / `error` not explicitly logged in `verifyDocument` | *(no explicit audit log call - see gap below)* |
 | KYC status updated | via `updateUserKycStatus` DB write | timestamp recorded in `users.updatedAt` |
 
 **Current gap:** `KYCController.verifyDocument()` (`KYCController.ts:178-217`) does not emit an explicit audit log entry recording *who* made the verification decision, *when*, and *what notes were provided*. Only the DB columns `kycDocuments.reviewedAt` and `kycDocuments.rejectionReason` capture partial state.
@@ -271,7 +271,7 @@ Once closed, Issue #725 is expected to deliver:
 
 - A dedicated `auditLogs` table recording every state transition with: actor identity, timestamp, previous state, new state, and reason.
 - Structured log entries on all admin actions (`verifyDocument`, `updateUserKycStatus`, manual status overrides).
-- A compliance export endpoint (format TBD) for regulatory reporting — list of approved/rejected investors with timestamps and document references.
+- A compliance export endpoint (format TBD) for regulatory reporting - list of approved/rejected investors with timestamps and document references.
 - Retention policy configuration for KYC documents and audit records.
 
 **When Issue #725 is merged:** Replace this placeholder section with the actual audit log schema, the new export endpoint reference, and the updated `verifyDocument` flow that includes the actor-identity log call.
@@ -310,7 +310,7 @@ Repeat Step 3a for every document the user uploaded. The user-level status only 
 
 ## See also
 
-- `docs/api/minting-workflow.md` — how `property.verified` (separate from user KYC) gates tokenization
-- `docs/deployment/environment-variables.md` — `OPERATIONS_BACKEND_CREDENTIAL` and `OPERATIONS_ALLOWED_WALLETS`
-- Issue #725 — Audit Log Models & Compliance Export (pending — will expand the Audit & Compliance Logging section above)
-- Issue #722 — Dividend & Cashflow Distribution (pending — adds new investor payout workflows; see `docs/operations/runbook-dividends-placeholder.md`)
+- `docs/api/minting-workflow.md` - how `property.verified` (separate from user KYC) gates tokenization
+- `docs/deployment/environment-variables.md` - `OPERATIONS_BACKEND_CREDENTIAL` and `OPERATIONS_ALLOWED_WALLETS`
+- Issue #725 - Audit Log Models & Compliance Export (pending - will expand the Audit & Compliance Logging section above)
+- Issue #722 - Dividend & Cashflow Distribution (pending - adds new investor payout workflows; see `docs/operations/runbook-dividends-placeholder.md`)

@@ -2,7 +2,7 @@
 
 ## What are smoke tests?
 
-Smoke tests verify that the most critical user flows work end-to-end after a deployment. They are **not** exhaustive — they confirm the app boots, connects to dependencies, and can handle a "happy path" request.
+Smoke tests verify that the most critical user flows work end-to-end after a deployment. They are **not** exhaustive - they confirm the app boots, connects to dependencies, and can handle a "happy path" request.
 
 Run smoke tests:
 - After every deploy to staging/production
@@ -47,7 +47,7 @@ Each factory returns a schema-compliant object with realistic defaults and accep
 ```ts
 import { createUser, createProperty, createLendingPool } from "@real-estate-defi/shared";
 
-// Defaults — approved KYC user with Miami address
+// Defaults - approved KYC user with Miami address
 const user = createUser();
 
 // Override specific fields

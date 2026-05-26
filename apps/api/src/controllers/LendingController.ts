@@ -254,7 +254,7 @@ export class LendingController {
       );
     }
 
-    // Best-effort on-chain liquidation — proceeds even if contract call fails
+    // Best-effort on-chain liquidation - proceeds even if contract call fails
     let txHash: string | null = null;
     const contractId = process.env.DEFI_RWA_CONTRACT_ID;
     const adminPublicKey = process.env.STELLAR_ADMIN_PUBLIC_KEY;

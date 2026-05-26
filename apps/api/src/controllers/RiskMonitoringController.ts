@@ -15,7 +15,7 @@ export class RiskMonitoringController {
     try {
       positions = await this.getAllBorrowPositions();
     } catch {
-      // DB unavailable — return empty array so monitoring degrades gracefully
+      // DB unavailable - return empty array so monitoring degrades gracefully
       return [];
     }
 
