@@ -299,7 +299,7 @@ export default function DashboardPage() {
                       <p className="text-xl font-bold text-white mt-1 font-mono">
                         {summary.avgYield > 0
                           ? `${summary.avgYield.toFixed(2)}%`
-                          : "—"}
+                          : "-"}
                       </p>
                       <p className="text-xs text-neutral-500 mt-1">
                         Supply APY
@@ -324,7 +324,7 @@ export default function DashboardPage() {
                         )}
                       >
                         {hfStatus === "none"
-                          ? "—"
+                          ? "-"
                           : isFinite(healthFactor)
                             ? healthFactor.toFixed(2)
                             : "∞"}

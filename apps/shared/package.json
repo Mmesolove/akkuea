@@ -1,5 +1,5 @@
 {
-  "name": "@real-estate-defi/shared",
+  "name": "@akkuea/shared",
   "version": "1.0.0",
   "description": "Shared utilities and types for Real Estate DeFi platform",
   "main": "dist/index.js",

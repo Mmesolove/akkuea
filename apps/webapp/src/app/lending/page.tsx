@@ -140,7 +140,7 @@ function YieldCalculator({ isOpen, onClose }: YieldCalculatorProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Skeleton — shown while pools are loading
+// Skeleton - shown while pools are loading
 // ---------------------------------------------------------------------------
 
 function PoolRowSkeleton() {
@@ -243,7 +243,7 @@ export default function LendingPage() {
     [userPositions],
   );
 
-  /** Average supply APY across all active pools — computed dynamically */
+  /** Average supply APY across all active pools - computed dynamically */
   const avgSupplyAPY = useMemo(() => {
     const activePools = pools.filter((p) => p.isActive && !p.isPaused);
     if (activePools.length === 0) return null;
@@ -252,7 +252,7 @@ export default function LendingPage() {
     return avg.toFixed(1);
   }, [pools]);
 
-  /** Average borrow APR across active pools — for Total Borrowed card */
+  /** Average borrow APR across active pools - for Total Borrowed card */
   const avgBorrowAPY = useMemo(() => {
     const activePools = pools.filter((p) => p.isActive && !p.isPaused);
     if (activePools.length === 0) return null;
@@ -305,7 +305,7 @@ export default function LendingPage() {
 
   const hfDisplayValue =
     hfStatus === "none"
-      ? "—"
+      ? "-"
       : isFinite(healthFactor)
         ? healthFactor.toFixed(2)
         : "∞";

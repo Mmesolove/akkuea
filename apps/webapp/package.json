@@ -1,5 +1,5 @@
 {
-  "name": "@real-estate-defi/webapp",
+  "name": "@akkuea/webapp",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,7 +19,7 @@
     "react-dom": "19.2.3",
     "stellar-sdk": "^13.3.0",
     "soroban-client": "^1.0.1",
-    "@real-estate-defi/shared": "workspace:*",
+    "@akkuea/shared": "workspace:*",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.468.0",

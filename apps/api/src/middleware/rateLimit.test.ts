@@ -139,7 +139,7 @@ describe('createRedisStore', () => {
 });
 
 // ---------------------------------------------------------------------------
-// rateLimit middleware (in-memory mode — no REDIS_URL in tests)
+// rateLimit middleware (in-memory mode - no REDIS_URL in tests)
 // ---------------------------------------------------------------------------
 
 describe('rateLimit middleware', () => {
@@ -163,7 +163,7 @@ describe('rateLimit middleware', () => {
       await middleware({ request, set }); // 1st
       await middleware({ request, set }); // 2nd
       await middleware({ request, set }); // 3rd
-      const result = await middleware({ request, set }); // 4th — blocked
+      const result = await middleware({ request, set }); // 4th - blocked
 
       expect(result).toEqual({
         success: false,
@@ -197,7 +197,7 @@ describe('rateLimit middleware', () => {
       const set2 = createMockSet();
 
       await middleware({ request: req1, set: set1 }); // 1st for IP1
-      await middleware({ request: req1, set: set1 }); // 2nd for IP1 — blocked
+      await middleware({ request: req1, set: set1 }); // 2nd for IP1 - blocked
       const result2 = await middleware({ request: req2, set: set2 }); // 1st for IP2
 
       expect(result2).toBeUndefined();
@@ -211,7 +211,7 @@ describe('rateLimit middleware', () => {
       const set = createMockSet();
 
       await middleware({ request, set }); // 1st
-      await middleware({ request, set }); // 2nd — blocked
+      await middleware({ request, set }); // 2nd - blocked
 
       expect(set.headers!['Retry-After']).toBeDefined();
       expect(Number(set.headers!['Retry-After'])).toBeGreaterThan(0);

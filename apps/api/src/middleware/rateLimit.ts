@@ -108,7 +108,7 @@ export function rateLimit(options: RateLimitOptions = {}) {
     });
   } else {
     console.warn(
-      '[rateLimit] REDIS_URL not set — using in-memory rate limiting (not safe for multi-instance deployments)',
+      '[rateLimit] REDIS_URL not set - using in-memory rate limiting (not safe for multi-instance deployments)',
     );
     storeReady = Promise.resolve(createMemoryStore());
   }
