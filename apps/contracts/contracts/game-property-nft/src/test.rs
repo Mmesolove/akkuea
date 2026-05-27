@@ -1,12 +1,12 @@
 #![cfg(test)]
 
-use soroban_sdk::{testutils::Address as _, Address, Env, IntoVal, Map};
+use soroban_sdk::{testutils::Address as _, Address, Env};
 
-use crate::{GamePropertyNft, GamePropertyNftClient, NftError, PropertyState, TOTAL_TILES};
+use crate::{GamePropertyNft, GamePropertyNftClient, NftError, TOTAL_TILES};
 
 fn setup() -> (Env, Address, Address, GamePropertyNftClient<'static>) {
     let env = Env::default();
-    env.budget().reset_unlimited();
+    env.cost_estimate().budget().reset_unlimited();
     env.mock_all_auths();
 
     let treasury = Address::generate(&env);
