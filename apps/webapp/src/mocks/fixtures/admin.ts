@@ -51,9 +51,9 @@ export const mockAdminQueue: OperationalPropertyListItem[] = [
       hasTokenAddress: false,
     },
     lastReviewedAt: "2024-05-25T10:00:00.000Z",
-    lastReviewerWallet:
-      "GADMINREVIEWER000000000000000000000000000000000000000",
-    lastReviewNote: "KYC tier insufficient. Please resubmit with full verification.",
+    lastReviewerWallet: "GADMINREVIEWER000000000000000000000000000000000000000",
+    lastReviewNote:
+      "KYC tier insufficient. Please resubmit with full verification.",
     listedAt: mockProperties[4].listedAt,
   },
 ];

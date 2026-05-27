@@ -1,8 +1,5 @@
 import { http, HttpResponse } from "msw";
-import {
-  mockAdminQueue,
-  mockAdminPropertyDetail,
-} from "../fixtures/admin";
+import { mockAdminQueue, mockAdminPropertyDetail } from "../fixtures/admin";
 import type { PaginatedResponse } from "@/services/api/types";
 import type { OperationalPropertyListItem } from "@/services/api/adminOperations";
 
@@ -56,21 +53,18 @@ export const adminHandlers = [
   /**
    * GET /api/admin/operations/properties/:propertyId
    */
-  http.get(
-    "/api/admin/operations/properties/:propertyId",
-    ({ params }) => {
-      if (params.propertyId === mockAdminPropertyDetail.id) {
-        return HttpResponse.json({
-          success: true,
-          data: mockAdminPropertyDetail,
-        });
-      }
-      return HttpResponse.json(
-        { success: false, error: "Property not found in operations queue" },
-        { status: 404 },
-      );
-    },
-  ),
+  http.get("/api/admin/operations/properties/:propertyId", ({ params }) => {
+    if (params.propertyId === mockAdminPropertyDetail.id) {
+      return HttpResponse.json({
+        success: true,
+        data: mockAdminPropertyDetail,
+      });
+    }
+    return HttpResponse.json(
+      { success: false, error: "Property not found in operations queue" },
+      { status: 404 },
+    );
+  }),
 
   /**
    * POST /api/admin/operations/properties/:propertyId/review

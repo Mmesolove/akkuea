@@ -2,8 +2,7 @@ import type { PropertyInfo } from "@real-estate-defi/shared";
 import type { PaginatedResponse } from "@/services/api/types";
 
 /** Realistic mock wallet addresses (Stellar G... format) */
-const OWNER_WALLET =
-  "GAHTJRC3QXATJQLDPTBYVR27EPIVFQEZV2LJMJ32VE7QDMQBLUHVDUN";
+const OWNER_WALLET = "GAHTJRC3QXATJQLDPTBYVR27EPIVFQEZV2LJMJ32VE7QDMQBLUHVDUN";
 
 export const mockProperties: PropertyInfo[] = [
   {

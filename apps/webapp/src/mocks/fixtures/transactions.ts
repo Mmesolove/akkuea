@@ -1,4 +1,7 @@
-import type { Transaction, PaginatedTransactionResponse } from "@real-estate-defi/shared";
+import type {
+  Transaction,
+  PaginatedTransactionResponse,
+} from "@real-estate-defi/shared";
 import { MOCK_WALLET_ADDRESS } from "./users";
 
 const POOL_USDC = "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
@@ -19,7 +22,10 @@ export const mockTransactions: Transaction[] = [
     ledger: 48391200,
     fee: "0.0001",
     memo: "Buy 150 shares - Lagos Island",
-    metadata: { propertyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890", shares: 150 },
+    metadata: {
+      propertyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      shares: 150,
+    },
   },
   {
     id: "txn-002-uuid-0000-0000-000000000002",
@@ -49,7 +55,10 @@ export const mockTransactions: Transaction[] = [
     ledger: 48620100,
     fee: "0.0001",
     memo: "Buy 75 shares - Cape Town",
-    metadata: { propertyId: "d4e5f6a7-b8c9-0123-defa-234567890123", shares: 75 },
+    metadata: {
+      propertyId: "d4e5f6a7-b8c9-0123-defa-234567890123",
+      shares: 75,
+    },
   },
   {
     id: "txn-004-uuid-0000-0000-000000000004",
@@ -79,7 +88,10 @@ export const mockTransactions: Transaction[] = [
     ledger: 49100800,
     fee: "0.0001",
     memo: "Borrow from USDC pool",
-    metadata: { poolId: "pool-0001-uuid-0000-0000-000000000001", collateral: "18000.00" },
+    metadata: {
+      poolId: "pool-0001-uuid-0000-0000-000000000001",
+      collateral: "18000.00",
+    },
   },
   {
     id: "txn-006-uuid-0000-0000-000000000006",
@@ -109,7 +121,10 @@ export const mockTransactions: Transaction[] = [
     ledger: 50150000,
     fee: "0.0000",
     memo: "Q2 2024 dividend - Lagos Island",
-    metadata: { propertyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890", period: "Q2-2024" },
+    metadata: {
+      propertyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      period: "Q2-2024",
+    },
   },
   {
     id: "txn-008-uuid-0000-0000-000000000008",
@@ -121,7 +136,10 @@ export const mockTransactions: Transaction[] = [
     status: "pending",
     timestamp: "2026-05-27T11:30:00.000Z",
     memo: "Buy 40 shares - Nairobi",
-    metadata: { propertyId: "b2c3d4e5-f6a7-8901-bcde-f12345678901", shares: 40 },
+    metadata: {
+      propertyId: "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      shares: 40,
+    },
   },
 ];
 

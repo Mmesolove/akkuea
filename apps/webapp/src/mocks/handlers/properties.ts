@@ -1,5 +1,8 @@
 import { http, HttpResponse } from "msw";
-import { mockPaginatedProperties, mockProperties } from "../fixtures/properties";
+import {
+  mockPaginatedProperties,
+  mockProperties,
+} from "../fixtures/properties";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 

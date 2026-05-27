@@ -58,7 +58,5 @@ export const mockPortfolio = {
     { poolId: "pool-0001-uuid-0000-0000-000000000001", amount: 25000 },
     { poolId: "pool-0002-uuid-0000-0000-000000000002", amount: 50000 },
   ],
-  borrows: [
-    { poolId: "pool-0001-uuid-0000-0000-000000000001", amount: 12000 },
-  ],
+  borrows: [{ poolId: "pool-0001-uuid-0000-0000-000000000001", amount: 12000 }],
 };
