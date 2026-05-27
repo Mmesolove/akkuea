@@ -26,6 +26,7 @@ import {
   CardContent,
   Button,
   Badge,
+  ErrorBoundary,
 } from "@/components/ui";
 import { useWallet } from "@/components/auth/hooks";
 import { usePortfolio } from "@/hooks/usePortfolio";
@@ -136,6 +137,7 @@ export default function DashboardPage() {
     >
       <Navbar />
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <ErrorBoundary>
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -509,6 +511,7 @@ export default function DashboardPage() {
             </motion.div>
           </div>
         </motion.div>
+        </ErrorBoundary>
       </main>
       <Footer />
     </motion.div>

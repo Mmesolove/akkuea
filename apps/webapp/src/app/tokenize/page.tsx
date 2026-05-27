@@ -21,7 +21,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Navbar, Footer } from "@/components/layout";
-import { Card, Button, Textarea, Badge, Stepper } from "@/components/ui";
+import { Card, Button, Textarea, Badge, Stepper, ErrorBoundary } from "@/components/ui";
 import { useWallet } from "@/components/auth/hooks";
 import { formatCurrency } from "@/lib/utils";
 import { Form, FormInput, FormSelect } from "@/components/forms";
@@ -138,6 +138,7 @@ export default function TokenizePage() {
     >
       <Navbar />
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        <ErrorBoundary>
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -807,6 +808,7 @@ export default function TokenizePage() {
             </Card>
           </motion.div>
         </motion.div>
+        </ErrorBoundary>
       </main>
       <Footer />
     </motion.div>

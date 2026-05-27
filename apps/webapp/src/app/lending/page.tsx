@@ -26,6 +26,7 @@ import {
   CardContent,
   Button,
   Badge,
+  ErrorBoundary,
   FreshnessIndicator,
   Input,
   Modal,
@@ -101,7 +102,7 @@ function YieldCalculator({ isOpen, onClose }: YieldCalculatorProps) {
           />
         </div>
 
-        <div className="p-6 bg-gradient-to-br from-[#00ff88]/5 to-[#ff3e00]/5 border border-[#00ff88]/20 rounded-lg">
+        <div className="p-6 bg-linear-to-br from-[#00ff88]/5 to-[#ff3e00]/5 border border-[#00ff88]/20 rounded-lg">
           <div className="grid sm:grid-cols-3 gap-6 text-center">
             <div>
               <p className="text-xs text-neutral-500 mb-1 uppercase tracking-wider">
@@ -388,6 +389,7 @@ export default function LendingPage() {
     >
       <Navbar />
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <ErrorBoundary>
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -455,7 +457,7 @@ export default function LendingPage() {
               >
                 <div className="flex items-center gap-3">
                   <AlertCircle
-                    className="w-4 h-4 text-red-400 flex-shrink-0"
+                    className="w-4 h-4 text-red-400 shrink-0"
                     aria-hidden="true"
                   />
                   <p className="text-sm text-red-400">{error}</p>
@@ -652,7 +654,7 @@ export default function LendingPage() {
                             {/* Pool identity */}
                             <div className="flex items-center gap-4 lg:w-1/4">
                               <div
-                                className="w-10 h-10 rounded-lg bg-[#262626] flex items-center justify-center flex-shrink-0"
+                                className="w-10 h-10 rounded-lg bg-[#262626] flex items-center justify-center shrink-0"
                                 aria-label={pool.asset}
                               >
                                 <Coins
@@ -705,7 +707,7 @@ export default function LendingPage() {
                                 <div className="flex items-center gap-2">
                                   <div className="flex-1 h-1 bg-[#262626] rounded-full overflow-hidden">
                                     <div
-                                      className="h-full bg-gradient-to-r from-[#ff3e00] to-[#00ff88]"
+                                      className="h-full bg-linear-to-r from-[#ff3e00] to-[#00ff88]"
                                       style={{
                                         width: `${pool.utilizationRate}%`,
                                       }}
@@ -838,6 +840,7 @@ export default function LendingPage() {
             <TransactionHistory />
           </motion.div>
         </motion.div>
+        </ErrorBoundary>
       </main>
       <Footer />
 
