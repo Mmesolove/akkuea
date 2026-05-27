@@ -1,13 +1,8 @@
 #![cfg(test)]
 
-use soroban_sdk::{
-    testutils::Address as _,
-    Address, Env, IntoVal, Map,
-};
+use soroban_sdk::{testutils::Address as _, Address, Env, IntoVal, Map};
 
-use crate::{
-    GamePropertyNft, GamePropertyNftClient, NftError, PropertyState, TOTAL_TILES,
-};
+use crate::{GamePropertyNft, GamePropertyNftClient, NftError, PropertyState, TOTAL_TILES};
 
 fn setup() -> (Env, Address, Address, GamePropertyNftClient<'static>) {
     let env = Env::default();

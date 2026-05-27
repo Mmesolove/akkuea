@@ -49,9 +49,10 @@ impl GamePropertyNft {
         env.storage()
             .instance()
             .set(&symbol_short!("engine"), &game_engine);
-        env.storage()
-            .instance()
-            .set(&symbol_short!("init_ledg"), &(env.ledger().sequence() as u64));
+        env.storage().instance().set(
+            &symbol_short!("init_ledg"),
+            &(env.ledger().sequence() as u64),
+        );
 
         // Start with an empty world to stay under Stellar's 65KB contract size limits
         let world = SimpleWorld::new(&env);
@@ -86,7 +87,13 @@ impl GamePropertyNft {
         }
 
         // Perform transfer
-        world.set_typed(&env, property_id, &PropertyOwner { address: to.clone() });
+        world.set_typed(
+            &env,
+            property_id,
+            &PropertyOwner {
+                address: to.clone(),
+            },
+        );
 
         // Clear approval
         let mut approves = get_approvals(&env);
@@ -133,13 +140,7 @@ impl GamePropertyNft {
     }
 
     /// Transfer property `property_id` from `from` to `to` using a prior approval.
-    pub fn transfer_from(
-        env: Env,
-        spender: Address,
-        from: Address,
-        to: Address,
-        property_id: u32,
-    ) {
+    pub fn transfer_from(env: Env, spender: Address, from: Address, to: Address, property_id: u32) {
         spender.require_auth();
 
         let pausable = Pausable::new(symbol_short!("prop_nft"));
@@ -173,7 +174,13 @@ impl GamePropertyNft {
         }
 
         // Perform transfer
-        world.set_typed(&env, property_id, &PropertyOwner { address: to.clone() });
+        world.set_typed(
+            &env,
+            property_id,
+            &PropertyOwner {
+                address: to.clone(),
+            },
+        );
 
         // Clear approval
         let mut approves = approves;
@@ -211,13 +218,11 @@ impl GamePropertyNft {
         let owner_comp: PropertyOwner = world
             .get_typed(&env, property_id)
             .unwrap_or(PropertyOwner { address: treasury });
-        let meta: PropertyMeta = world
-            .get_typed(&env, property_id)
-            .unwrap_or(PropertyMeta {
-                level: 0,
-                last_claimed_ledger: init_ledger,
-                approved_spender: 0,
-            });
+        let meta: PropertyMeta = world.get_typed(&env, property_id).unwrap_or(PropertyMeta {
+            level: 0,
+            last_claimed_ledger: init_ledger,
+            approved_spender: 0,
+        });
 
         let approves = get_approvals(&env);
         let approved = approves.get(property_id);
@@ -273,12 +278,7 @@ impl GamePropertyNft {
     }
 
     /// Set building level (only GameEngine).
-    pub fn set_improvement_level(
-        env: Env,
-        caller: Address,
-        property_id: u32,
-        level: u32,
-    ) {
+    pub fn set_improvement_level(env: Env, caller: Address, property_id: u32, level: u32) {
         caller.require_auth();
 
         let stored_engine: Address = env
@@ -305,13 +305,11 @@ impl GamePropertyNft {
             .unwrap_or(0u64);
 
         let mut world = load_world(&env);
-        let mut meta: PropertyMeta = world
-            .get_typed(&env, property_id)
-            .unwrap_or(PropertyMeta {
-                level: 0,
-                last_claimed_ledger: init_ledger,
-                approved_spender: 0,
-            });
+        let mut meta: PropertyMeta = world.get_typed(&env, property_id).unwrap_or(PropertyMeta {
+            level: 0,
+            last_claimed_ledger: init_ledger,
+            approved_spender: 0,
+        });
         meta.level = level;
         world.set_typed(&env, property_id, &meta);
         save_world(&env, &world);
@@ -324,12 +322,7 @@ impl GamePropertyNft {
     }
 
     /// Set last claimed ledger (only GameEngine).
-    pub fn set_last_claimed_ledger(
-        env: Env,
-        caller: Address,
-        property_id: u32,
-        ledger: u64,
-    ) {
+    pub fn set_last_claimed_ledger(env: Env, caller: Address, property_id: u32, ledger: u64) {
         caller.require_auth();
 
         let stored_engine: Address = env
@@ -352,13 +345,11 @@ impl GamePropertyNft {
             .unwrap_or(0u64);
 
         let mut world = load_world(&env);
-        let mut meta: PropertyMeta = world
-            .get_typed(&env, property_id)
-            .unwrap_or(PropertyMeta {
-                level: 0,
-                last_claimed_ledger: init_ledger,
-                approved_spender: 0,
-            });
+        let mut meta: PropertyMeta = world.get_typed(&env, property_id).unwrap_or(PropertyMeta {
+            level: 0,
+            last_claimed_ledger: init_ledger,
+            approved_spender: 0,
+        });
         meta.last_claimed_ledger = ledger;
         world.set_typed(&env, property_id, &meta);
         save_world(&env, &world);
@@ -422,7 +413,5 @@ fn save_approvals(env: &Env, approvals: &Map<u32, Address>) {
 }
 
 fn bump_persistent(env: &Env, key: &Symbol) {
-    env.storage()
-        .persistent()
-        .extend_ttl(key, 518_400, 518_400); // 30 days
+    env.storage().persistent().extend_ttl(key, 518_400, 518_400); // 30 days
 }
