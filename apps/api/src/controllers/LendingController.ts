@@ -2,13 +2,7 @@ import type { AuthContext } from '../middleware/auth';
 import { ApiError } from '../errors/ApiError';
 import { lendingRepository } from '../repositories/LendingRepository';
 
-import {
-  CreatePoolDto,
-  DepositDto,
-  WithdrawDto,
-  BorrowDto,
-  RepayDto,
-} from '../dto/lending.dto';
+import { CreatePoolDto, DepositDto, WithdrawDto, BorrowDto, RepayDto } from '../dto/lending.dto';
 import { positionService } from '../services/PositionService';
 import { NotificationService } from '../services/NotificationService';
 import { cacheService } from '../services/CacheService';
@@ -347,9 +341,7 @@ export class LendingController {
   /**
    * Get user's borrow positions in a pool
    */
-  static async getUserBorrows(ctx: {
-    params: { id: string; address: string };
-  }): Promise<Response> {
+  static async getUserBorrows(ctx: { params: { id: string; address: string } }): Promise<Response> {
     const { id: poolId, address } = ctx.params;
     if (!positionService.validateAddress(address)) {
       throw new ApiError(400, 'INVALID_ADDRESS', 'Invalid Stellar address format');
