@@ -2,7 +2,13 @@ import type { AuthContext } from '../middleware/auth';
 import { ApiError } from '../errors/ApiError';
 import { lendingRepository } from '../repositories/LendingRepository';
 
-import { CreatePoolDto, DepositDto, WithdrawDto, BorrowDto, RepayDto } from '../dto/lending.dto';
+import {
+  CreatePoolDto,
+  DepositDto,
+  WithdrawDto,
+  BorrowDto,
+  RepayDto,
+} from '../dto/lending.dto';
 import { positionService } from '../services/PositionService';
 import { NotificationService } from '../services/NotificationService';
 import { cacheService } from '../services/CacheService';
@@ -99,7 +105,10 @@ export class LendingController {
    * Deposit into a lending pool (auth required)
    */
   static async deposit(
-    ctx: AuthContext & { params: { id: string }; body: unknown },
+    ctx: AuthContext & {
+      params: { id: string };
+      body: unknown;
+    },
   ): Promise<Response> {
     const { id: poolId } = ctx.params;
     const user = await this.resolveAuthenticatedUser(ctx);
@@ -128,7 +137,10 @@ export class LendingController {
    * Withdraw from a lending pool (auth required)
    */
   static async withdraw(
-    ctx: AuthContext & { params: { id: string }; body: unknown },
+    ctx: AuthContext & {
+      params: { id: string };
+      body: unknown;
+    },
   ): Promise<Response> {
     const { id: poolId } = ctx.params;
     const user = await this.resolveAuthenticatedUser(ctx);
@@ -164,7 +176,10 @@ export class LendingController {
    * Borrow from a lending pool (auth required)
    */
   static async borrow(
-    ctx: AuthContext & { params: { id: string }; body: unknown },
+    ctx: AuthContext & {
+      params: { id: string };
+      body: unknown;
+    },
   ): Promise<Response> {
     const { id: poolId } = ctx.params;
     const user = await this.resolveAuthenticatedUser(ctx);
@@ -201,7 +216,10 @@ export class LendingController {
    * Repay a loan (auth required)
    */
   static async repay(
-    ctx: AuthContext & { params: { id: string }; body: unknown },
+    ctx: AuthContext & {
+      params: { id: string };
+      body: unknown;
+    },
   ): Promise<Response> {
     const { id: poolId } = ctx.params;
     const user = await this.resolveAuthenticatedUser(ctx);
@@ -313,9 +331,9 @@ export class LendingController {
   /**
    * Get user's deposit positions in a pool
    */
-  static async getUserDeposits(
-    ctx: { params: { id: string; address: string } },
-  ): Promise<Response> {
+  static async getUserDeposits(ctx: {
+    params: { id: string; address: string };
+  }): Promise<Response> {
     const { id: poolId, address } = ctx.params;
     if (!positionService.validateAddress(address)) {
       throw new ApiError(400, 'INVALID_ADDRESS', 'Invalid Stellar address format');
@@ -329,9 +347,9 @@ export class LendingController {
   /**
    * Get user's borrow positions in a pool
    */
-  static async getUserBorrows(
-    ctx: { params: { id: string; address: string } },
-  ): Promise<Response> {
+  static async getUserBorrows(ctx: {
+    params: { id: string; address: string };
+  }): Promise<Response> {
     const { id: poolId, address } = ctx.params;
     if (!positionService.validateAddress(address)) {
       throw new ApiError(400, 'INVALID_ADDRESS', 'Invalid Stellar address format');
@@ -345,9 +363,9 @@ export class LendingController {
   /**
    * Get user position summary in a pool
    */
-  static async getUserPositionSummary(
-    ctx: { params: { id: string; address: string } },
-  ): Promise<Response> {
+  static async getUserPositionSummary(ctx: {
+    params: { id: string; address: string };
+  }): Promise<Response> {
     const { id: poolId, address } = ctx.params;
     if (!positionService.validateAddress(address)) {
       throw new ApiError(400, 'INVALID_ADDRESS', 'Invalid Stellar address format');
