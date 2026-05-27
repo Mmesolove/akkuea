@@ -1,121 +1,52 @@
-//! ECS component keys for the PropertyNFT contract.
-//!
-//! Each property tile (entity) is identified by a `u32` ID.  Components are
-//! stored in Soroban's **persistent** ledger storage under typed keys, which
-//! mirrors the Cougr `SimpleWorld` storage layout:
-//!
-//! ```text
-//! SimpleWorld: Map<(EntityId, Symbol), Bytes>
-//! ```
-//!
-//! We use a Soroban `contracttype` enum to get the same type-safe, compact
-//! encoding without pulling in the full ECS runtime.
+use soroban_sdk::{contracttype, Address, Bytes, Env, Symbol, symbol_short};
+use soroban_sdk::xdr::{FromXdr, ToXdr};
+use cougr_core::component::{ComponentStorage, ComponentTrait};
+use cougr_core::impl_component;
 
-use soroban_sdk::{contracttype, Address, Env, Vec};
-
-// ---------------------------------------------------------------------------
-// Storage key enum (Cougr SimpleWorld entity-component layout)
-// ---------------------------------------------------------------------------
-
-/// Persistent storage keys for each component of a property entity.
-///
-/// The variant naming convention is `<Component><EntityId>`, which maps to
-/// the `(entity_id, component_symbol)` tuple used by Cougr's `SimpleWorld`.
 #[contracttype]
-#[derive(Clone)]
-pub enum ComponentKey {
-    /// Immutable (col, row) coordinates of a tile.
-    Coordinates(u32),
-    /// Current owner `Address` of a tile.
-    Owner(u32),
-    /// Current approved spender for a single-token approval.
-    Approved(u32),
-    /// Building / improvement tier (u32, default 0).
-    ImprovementLevel(u32),
-    /// Ledger sequence number of the last rental-income claim (u32).
-    LastRentalClaim(u32),
-    /// Reverse index: list of property IDs owned by an address.
-    OwnerIndex(Address),
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PropertyCoords {
+    pub x: u32,
+    pub y: u32,
 }
 
-// ---------------------------------------------------------------------------
-// Convenience constructors
-// ---------------------------------------------------------------------------
+impl_component!(PropertyCoords, "coords", Table, { x: u32, y: u32 });
 
-#[inline]
-pub fn coordinates_key(id: u32) -> ComponentKey {
-    ComponentKey::Coordinates(id)
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PropertyOwner {
+    pub address: Address,
 }
 
-#[inline]
-pub fn owner_key(id: u32) -> ComponentKey {
-    ComponentKey::Owner(id)
-}
-
-#[inline]
-pub fn approved_key(id: u32) -> ComponentKey {
-    ComponentKey::Approved(id)
-}
-
-#[inline]
-pub fn improvement_key(id: u32) -> ComponentKey {
-    ComponentKey::ImprovementLevel(id)
-}
-
-#[inline]
-pub fn last_rental_key(id: u32) -> ComponentKey {
-    ComponentKey::LastRentalClaim(id)
-}
-
-// ---------------------------------------------------------------------------
-// Owner index helpers (many-to-one reverse mapping)
-// ---------------------------------------------------------------------------
-
-/// Add `id` to the owner's index list.
-pub fn owner_index_add(env: &Env, owner: &Address, id: u32) {
-    let key = ComponentKey::OwnerIndex(owner.clone());
-    let mut ids: Vec<u32> = env
-        .storage()
-        .persistent()
-        .get(&key)
-        .unwrap_or_else(|| Vec::new(env));
-
-    // Avoid duplicates (should never happen, but defensive)
-    for i in 0..ids.len() {
-        if ids.get(i).unwrap_or(u32::MAX) == id {
-            return;
-        }
+impl ComponentTrait for PropertyOwner {
+    fn component_type() -> Symbol {
+        symbol_short!("owner")
     }
-    ids.push_back(id);
-    env.storage().persistent().set(&key, &ids);
-    crate::storage::bump_persistent(env, &key);
-}
 
-/// Remove `id` from the owner's index list.
-pub fn owner_index_remove(env: &Env, owner: &Address, id: u32) {
-    let key = ComponentKey::OwnerIndex(owner.clone());
-    let ids: Vec<u32> = env
-        .storage()
-        .persistent()
-        .get(&key)
-        .unwrap_or_else(|| Vec::new(env));
-
-    let mut new_ids: Vec<u32> = Vec::new(env);
-    for i in 0..ids.len() {
-        let v = ids.get(i).unwrap_or(u32::MAX);
-        if v != id {
-            new_ids.push_back(v);
-        }
+    fn serialize(&self, env: &Env) -> Bytes {
+        self.address.clone().to_xdr(env)
     }
-    env.storage().persistent().set(&key, &new_ids);
-    crate::storage::bump_persistent(env, &key);
+
+    fn deserialize(env: &Env, data: &Bytes) -> Option<Self> {
+        let address = Address::from_xdr(env, data).ok()?;
+        Some(PropertyOwner { address })
+    }
+
+    fn default_storage() -> ComponentStorage {
+        ComponentStorage::Table
+    }
 }
 
-/// Return all property IDs in the owner's index.
-pub fn owner_index_list(env: &Env, owner: &Address) -> Vec<u32> {
-    let key = ComponentKey::OwnerIndex(owner.clone());
-    env.storage()
-        .persistent()
-        .get(&key)
-        .unwrap_or_else(|| Vec::new(env))
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PropertyMeta {
+    pub level: u32,
+    pub last_claimed_ledger: u64,
+    pub approved_spender: u32, // entity id of approved address, 0 if none
 }
+
+impl_component!(PropertyMeta, "meta", Sparse, {
+    level: u32,
+    last_claimed_ledger: u64,
+    approved_spender: u32,
+});

@@ -1,99 +1,37 @@
-//! Soroban contract events emitted by PropertyNFT.
-//!
-//! Every state-changing entry point emits a typed event.  The frontend
-//! and the API indexer subscribe to these for real-time updates.
+use soroban_sdk::{contractevent, Address, Env};
 
-use soroban_sdk::{Address, Env, Symbol};
-
-// ---------------------------------------------------------------------------
-// Event topics
-// ---------------------------------------------------------------------------
-
-const TOPIC_CONTRACT: &str = "property_nft";
-
-// ---------------------------------------------------------------------------
-// transfer(from?, to, id)
-// ---------------------------------------------------------------------------
-
-/// Emitted on every ownership transfer, including initial mints.
-///
-/// For mints, `from` is `None`.
-///
-/// Topics:  [`"property_nft"`, `"transfer"`]
-/// Data:    `{ from: Address | null, to: Address, id: u32 }`
-pub fn emit_transfer(env: &Env, from: Option<&Address>, to: &Address, id: u32) {
-    let topics = (
-        Symbol::new(env, TOPIC_CONTRACT),
-        Symbol::new(env, "transfer"),
-    );
-    match from {
-        Some(f) => env.events().publish(topics, (f.clone(), to.clone(), id)),
-        None => env.events().publish(topics, (to.clone(), id)),
-    }
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TransferEvent {
+    pub from: Option<Address>,
+    pub to: Address,
+    pub id: u32,
 }
 
-// ---------------------------------------------------------------------------
-// approved(owner, spender, id)
-// ---------------------------------------------------------------------------
-
-/// Emitted when an approval is set for a single property.
-///
-/// Topics:  [`"property_nft"`, `"approved"`]
-/// Data:    `{ owner: Address, spender: Address, id: u32 }`
-pub fn emit_approved(env: &Env, owner: &Address, spender: &Address, id: u32) {
-    let topics = (
-        Symbol::new(env, TOPIC_CONTRACT),
-        Symbol::new(env, "approved"),
-    );
-    env.events()
-        .publish(topics, (owner.clone(), spender.clone(), id));
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ApproveEvent {
+    pub owner: Address,
+    pub spender: Address,
+    pub id: u32,
 }
 
-// ---------------------------------------------------------------------------
-// initialized(deployer, treasury)
-// ---------------------------------------------------------------------------
-
-/// Emitted once when `initialize` completes successfully.
-///
-/// Topics:  [`"property_nft"`, `"initialized"`]
-/// Data:    `{ deployer: Address, treasury: Address }`
-pub fn emit_initialized(env: &Env, deployer: &Address, treasury: &Address) {
-    let topics = (
-        Symbol::new(env, TOPIC_CONTRACT),
-        Symbol::new(env, "initialized"),
-    );
-    env.events()
-        .publish(topics, (deployer.clone(), treasury.clone()));
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ImprovedEvent {
+    pub owner: Address,
+    pub id: u32,
+    pub level: u32,
 }
 
-// ---------------------------------------------------------------------------
-// paused(by)
-// ---------------------------------------------------------------------------
-
-/// Emitted when the contract owner pauses the contract.
-///
-/// Topics:  [`"property_nft"`, `"paused"`]
-/// Data:    `{ by: Address }`
-pub fn emit_paused(env: &Env, by: &Address) {
-    let topics = (
-        Symbol::new(env, TOPIC_CONTRACT),
-        Symbol::new(env, "paused"),
-    );
-    env.events().publish(topics, by.clone());
+pub fn emit_transfer(env: &Env, from: Option<Address>, to: Address, id: u32) {
+    TransferEvent { from, to, id }.publish(env);
 }
 
-// ---------------------------------------------------------------------------
-// unpaused(by)
-// ---------------------------------------------------------------------------
+pub fn emit_approve(env: &Env, owner: Address, spender: Address, id: u32) {
+    ApproveEvent { owner, spender, id }.publish(env);
+}
 
-/// Emitted when the contract owner resumes the contract.
-///
-/// Topics:  [`"property_nft"`, `"unpaused"`]
-/// Data:    `{ by: Address }`
-pub fn emit_unpaused(env: &Env, by: &Address) {
-    let topics = (
-        Symbol::new(env, TOPIC_CONTRACT),
-        Symbol::new(env, "unpaused"),
-    );
-    env.events().publish(topics, by.clone());
+pub fn emit_improved(env: &Env, owner: Address, id: u32, level: u32) {
+    ImprovedEvent { owner, id, level }.publish(env);
 }
