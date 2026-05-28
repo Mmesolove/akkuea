@@ -9,7 +9,10 @@ interface WalletProviderModalProps {
   onClose: () => void;
 }
 
-export function WalletProviderModal({ open, onClose }: WalletProviderModalProps) {
+export function WalletProviderModal({
+  open,
+  onClose,
+}: WalletProviderModalProps) {
   const { providers, connectWith, isConnecting } = useWallet();
 
   async function handleSelect(id: string) {
@@ -39,7 +42,9 @@ export function WalletProviderModal({ open, onClose }: WalletProviderModalProps)
             className="fixed left-1/2 top-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 bg-[#0a0a0a] border border-[#262626] rounded-xl shadow-2xl p-5"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-semibold text-white">Connect Wallet</h2>
+              <h2 className="text-sm font-semibold text-white">
+                Connect Wallet
+              </h2>
               <button
                 onClick={onClose}
                 className="text-neutral-500 hover:text-white transition-colors cursor-pointer"
