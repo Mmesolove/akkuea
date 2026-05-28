@@ -61,7 +61,10 @@ const userScoped = new Elysia()
         const { id } = await getAuthenticatedUser();
         const payload = body as {
           userId: string;
-          documents: { type: 'passport' | 'id_card' | 'proof_of_address' | 'other'; documentUrl: string }[];
+          documents: {
+            type: 'passport' | 'id_card' | 'proof_of_address' | 'other';
+            documentUrl: string;
+          }[];
         };
         if (payload.userId !== id) throw new ApiError(403, 'FORBIDDEN', 'Access denied');
         return await KYCController.submitKYC(payload);
@@ -162,32 +165,31 @@ const jwtScoped = new Elysia()
   });
 
 // Internal-only routes (require INTERNAL_API_KEY header and reject user JWTs)
-const internalScoped = new Elysia().post('/verify/:documentId', async ({
-  params: { documentId },
-  body,
-  set,
-  headers,
-}) => {
-  try {
-    // Reject requests bearing a user JWT
-    if (headers['authorization']) {
-      throw new ApiError(401, 'UNAUTHORIZED', 'Internal key required');
-    }
+const internalScoped = new Elysia().post(
+  '/verify/:documentId',
+  async ({ params: { documentId }, body, set, headers }) => {
+    try {
+      // Reject requests bearing a user JWT
+      if (headers['authorization']) {
+        throw new ApiError(401, 'UNAUTHORIZED', 'Internal key required');
+      }
 
-    const key = headers['internal-api-key'] || headers['x-internal-api-key'] || headers['internal_api_key'];
-    const expected = process.env.INTERNAL_API_KEY;
-    if (!expected || key !== expected) {
-      throw new ApiError(401, 'UNAUTHORIZED', 'Internal key required');
-    }
+      const key =
+        headers['internal-api-key'] || headers['x-internal-api-key'] || headers['internal_api_key'];
+      const expected = process.env.INTERNAL_API_KEY;
+      if (!expected || key !== expected) {
+        throw new ApiError(401, 'UNAUTHORIZED', 'Internal key required');
+      }
 
-    return await KYCController.verifyDocument(
-      documentId,
-      body as { verified: boolean; notes?: string },
-    );
-  } catch (error) {
-    return handleKycError(error, set);
-  }
-});
+      return await KYCController.verifyDocument(
+        documentId,
+        body as { verified: boolean; notes?: string },
+      );
+    } catch (error) {
+      return handleKycError(error, set);
+    }
+  },
+);
 
 export const kycRoutes = new Elysia({ prefix: '/kyc' })
   .use(userScoped)

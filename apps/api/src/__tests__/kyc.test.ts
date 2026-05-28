@@ -49,15 +49,16 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
 
     it.skipIf(skipIfNoDatabase)('returns 401 when no token is provided', async () => {
       const app = createApp();
-      const response = await app.handle(
-        new Request(`http://localhost/kyc/status/${testUserId}`),
-      );
+      const response = await app.handle(new Request(`http://localhost/kyc/status/${testUserId}`));
       expect(response.status).toBe(401);
     });
 
     it.skipIf(skipIfNoDatabase)('returns 403 for a valid token for a different user', async () => {
       const app = createApp();
-      const otherToken = jwt.sign({ id: NON_EXISTENT_USER_ID, walletAddress: 'GOTHER' }, JWT_SECRET);
+      const otherToken = jwt.sign(
+        { id: NON_EXISTENT_USER_ID, walletAddress: 'GOTHER' },
+        JWT_SECRET,
+      );
       const response = await app.handle(
         new Request(`http://localhost/kyc/status/${testUserId}`, {
           headers: { Authorization: `Bearer ${otherToken}` },
@@ -85,7 +86,11 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request('http://localhost/kyc/upload', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-test-bypass-ratelimit': 'true', Authorization: `Bearer ${testToken}` },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-test-bypass-ratelimit': 'true',
+            Authorization: `Bearer ${testToken}`,
+          },
           body: JSON.stringify({}),
         }),
       );
@@ -297,7 +302,11 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       let lastStatus = 0;
       for (let i = 0; i < 15; i++) {
         const response = await app.handle(
-          new Request('http://localhost/kyc/upload', { method: 'POST', headers: { Authorization: `Bearer ${testToken}` }, body: formData }),
+          new Request('http://localhost/kyc/upload', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${testToken}` },
+            body: formData,
+          }),
         );
         lastStatus = response.status;
         if (response.status === 429) break;
