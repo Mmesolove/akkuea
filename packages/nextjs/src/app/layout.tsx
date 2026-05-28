@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import { ThemeProvider } from '@/components/theme-provider';
+import { Providers } from '@/components/Providers';
 import './globals.css';
-import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'Learning Hub',
@@ -12,15 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
