@@ -25,10 +25,7 @@ export function SectionErrorFallback({
     <Card variant="bordered" className="py-8">
       <div className="flex flex-col items-center justify-center text-center space-y-4">
         <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-          <AlertCircle
-            className="w-5 h-5 text-red-400"
-            aria-hidden="true"
-          />
+          <AlertCircle className="w-5 h-5 text-red-400" aria-hidden="true" />
         </div>
         <div>
           <p className="text-sm font-medium text-white">{message}</p>
