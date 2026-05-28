@@ -4,12 +4,15 @@ import { kycRoutes } from '../routes/kyc';
 import { errorHandler } from '../middleware/errorHandler';
 import { VALID_UUID, NON_EXISTENT_UUID } from '@real-estate-defi/shared';
 import { userRepository } from '../repositories/UserRepository';
+import jwt from 'jsonwebtoken';
 
 const skipIfNoDatabase = !process.env.DATABASE_URL;
 // Use a unique dummy address for KYC tests to avoid parallel test collisions with webhooks
 const TEST_WALLET = 'GAKYCTESTWALLETXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 const NON_EXISTENT_USER_ID = NON_EXISTENT_UUID;
 const NON_EXISTENT_DOC_ID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-default-key-for-dev';
+const INTERNAL_KEY = process.env.INTERNAL_API_KEY || 'generate-a-long-random-secret';
 
 function createApp() {
   return new Elysia().use(errorHandler).use(kycRoutes);
@@ -17,18 +20,22 @@ function createApp() {
 
 describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
   let testUserId = VALID_UUID;
+  let testToken = '';
 
   beforeAll(async () => {
     if (!skipIfNoDatabase) {
       const user = await userRepository.getOrCreateByWallet(TEST_WALLET);
       testUserId = user.id;
+      testToken = jwt.sign({ id: testUserId, walletAddress: TEST_WALLET }, JWT_SECRET);
     }
   });
   describe('GET /kyc/status/:userId', () => {
-    it.skipIf(skipIfNoDatabase)('returns 404 for non-existent user', async () => {
+    it.skipIf(skipIfNoDatabase)('returns 404 for non-existent user (authorized)', async () => {
       const app = createApp();
       const response = await app.handle(
-        new Request(`http://localhost/kyc/status/${NON_EXISTENT_USER_ID}`),
+        new Request(`http://localhost/kyc/status/${NON_EXISTENT_USER_ID}`, {
+          headers: { Authorization: `Bearer ${testToken}` },
+        }),
       );
       expect(response.status).toBe(404);
       const body = (await response.json()) as {
@@ -38,6 +45,25 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       };
       expect(body.error).toBe('NOT_FOUND');
       expect(body.message).toContain('User not found');
+    });
+
+    it.skipIf(skipIfNoDatabase)('returns 401 when no token is provided', async () => {
+      const app = createApp();
+      const response = await app.handle(
+        new Request(`http://localhost/kyc/status/${testUserId}`),
+      );
+      expect(response.status).toBe(401);
+    });
+
+    it.skipIf(skipIfNoDatabase)('returns 403 for a valid token for a different user', async () => {
+      const app = createApp();
+      const otherToken = jwt.sign({ id: NON_EXISTENT_USER_ID, walletAddress: 'GOTHER' }, JWT_SECRET);
+      const response = await app.handle(
+        new Request(`http://localhost/kyc/status/${testUserId}`, {
+          headers: { Authorization: `Bearer ${otherToken}` },
+        }),
+      );
+      expect(response.status).toBe(403);
     });
 
     it.skipIf(skipIfNoDatabase)('returns status and documents for existing user', async () => {
@@ -59,7 +85,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request('http://localhost/kyc/upload', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-test-bypass-ratelimit': 'true' },
+          headers: { 'Content-Type': 'application/json', 'x-test-bypass-ratelimit': 'true', Authorization: `Bearer ${testToken}` },
           body: JSON.stringify({}),
         }),
       );
@@ -76,7 +102,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request('http://localhost/kyc/upload', {
           method: 'POST',
-          headers: { 'x-test-bypass-ratelimit': 'true' },
+          headers: { 'x-test-bypass-ratelimit': 'true', Authorization: `Bearer ${testToken}` },
           body: formData,
         }),
       );
@@ -94,7 +120,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request('http://localhost/kyc/upload', {
           method: 'POST',
-          headers: { 'x-test-bypass-ratelimit': 'true' },
+          headers: { 'x-test-bypass-ratelimit': 'true', Authorization: `Bearer ${testToken}` },
           body: formData,
         }),
       );
@@ -114,7 +140,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request('http://localhost/kyc/upload', {
           method: 'POST',
-          headers: { 'x-test-bypass-ratelimit': 'true' },
+          headers: { 'x-test-bypass-ratelimit': 'true', Authorization: `Bearer ${testToken}` },
           body: formData,
         }),
       );
@@ -133,7 +159,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request('http://localhost/kyc/upload', {
           method: 'POST',
-          headers: { 'x-test-bypass-ratelimit': 'true' },
+          headers: { 'x-test-bypass-ratelimit': 'true', Authorization: `Bearer ${testToken}` },
           body: formData,
         }),
       );
@@ -148,7 +174,9 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
     it.skipIf(skipIfNoDatabase)('returns 404 for non-existent user', async () => {
       const app = createApp();
       const response = await app.handle(
-        new Request(`http://localhost/kyc/documents/${NON_EXISTENT_USER_ID}`),
+        new Request(`http://localhost/kyc/documents/${NON_EXISTENT_USER_ID}`, {
+          headers: { Authorization: `Bearer ${testToken}` },
+        }),
       );
       expect(response.status).toBe(404);
       const body = (await response.json()) as { error?: string };
@@ -162,7 +190,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request(`http://localhost/kyc/verify/${NON_EXISTENT_DOC_ID}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'internal-api-key': INTERNAL_KEY },
           body: JSON.stringify({ verified: true }),
         }),
       );
@@ -184,6 +212,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const uploadRes = await app.handle(
         new Request('http://localhost/kyc/upload', {
           method: 'POST',
+          headers: { Authorization: `Bearer ${testToken}` },
           body: formData,
         }),
       );
@@ -198,7 +227,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request(`http://localhost/kyc/verify/${documentId}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'internal-api-key': INTERNAL_KEY },
           body: JSON.stringify({ verified: true }),
         }),
       );
@@ -223,6 +252,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const uploadRes = await app.handle(
         new Request('http://localhost/kyc/upload', {
           method: 'POST',
+          headers: { Authorization: `Bearer ${testToken}` },
           body: formData,
         }),
       );
@@ -234,7 +264,7 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       const response = await app.handle(
         new Request(`http://localhost/kyc/verify/${documentId}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'internal-api-key': INTERNAL_KEY },
           body: JSON.stringify({ verified: false, notes: 'Document expired' }),
         }),
       );
@@ -248,7 +278,9 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
     it.skipIf(skipIfNoDatabase)('returns 404 for non-existent document', async () => {
       const app = createApp();
       const response = await app.handle(
-        new Request(`http://localhost/kyc/file/${NON_EXISTENT_DOC_ID}`),
+        new Request(`http://localhost/kyc/file/${NON_EXISTENT_DOC_ID}`, {
+          headers: { Authorization: `Bearer ${testToken}` },
+        }),
       );
       expect(response.status).toBe(404);
     });
@@ -265,12 +297,40 @@ describe.skipIf(skipIfNoDatabase)('KYC Routes', () => {
       let lastStatus = 0;
       for (let i = 0; i < 15; i++) {
         const response = await app.handle(
-          new Request('http://localhost/kyc/upload', { method: 'POST', body: formData }),
+          new Request('http://localhost/kyc/upload', { method: 'POST', headers: { Authorization: `Bearer ${testToken}` }, body: formData }),
         );
         lastStatus = response.status;
         if (response.status === 429) break;
       }
       expect(lastStatus).toBe(429);
+    });
+  });
+
+  describe('Verify endpoint auth rules', () => {
+    it.skipIf(skipIfNoDatabase)('returns 401 when called with a user JWT', async () => {
+      const app = createApp();
+      const token = jwt.sign({ id: testUserId, walletAddress: TEST_WALLET }, JWT_SECRET);
+      const response = await app.handle(
+        new Request(`http://localhost/kyc/verify/${NON_EXISTENT_DOC_ID}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ verified: true }),
+        }),
+      );
+      expect(response.status).toBe(401);
+    });
+
+    it.skipIf(skipIfNoDatabase)('accepts internal API key', async () => {
+      const app = createApp();
+      const response = await app.handle(
+        new Request(`http://localhost/kyc/verify/${NON_EXISTENT_DOC_ID}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'internal-api-key': INTERNAL_KEY },
+          body: JSON.stringify({ verified: true }),
+        }),
+      );
+      // With a missing document this should still reach auth then return 404
+      expect([200, 404]).toContain(response.status);
     });
   });
 });
