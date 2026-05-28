@@ -1,436 +1,300 @@
-# Akkuea 🚀🎓
+<div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/akkuea/akkuea?style=social)](https://github.com/akkuea/akkuea)
-[![GitHub issues](https://img.shields.io/github/issues/akkuea/akkuea)](https://github.com/akkuea/akkuea/issues)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/akkuea/akkuea/blob/main/LICENSE)
+# Akkuea
 
-## 🌟 Welcome to Akkuea
+**Real Estate Tokenization & DeFi Lending on the Stellar Blockchain**
 
-Akkuea is not just a platform—it's a **global community** redefining the future of education. Powered by **open-source technology**, **AI**, and **blockchain**, Akkuea transforms how knowledge is accessed, created, and shared. Our mission is to make high-quality education **free**, **accessible**, and **collaborative** for everyone, everywhere. 🌍
+[![Monorepo CI](https://github.com/akkuea/akkuea/actions/workflows/monorepo-ci.yml/badge.svg)](https://github.com/akkuea/akkuea/actions/workflows/monorepo-ci.yml)
+[![API CI](https://github.com/akkuea/akkuea/actions/workflows/api-ci.yml/badge.svg)](https://github.com/akkuea/akkuea/actions/workflows/api-ci.yml)
+[![Webapp CI](https://github.com/akkuea/akkuea/actions/workflows/webapp-ci.yml/badge.svg)](https://github.com/akkuea/akkuea/actions/workflows/webapp-ci.yml)
+[![Contracts CI](https://github.com/akkuea/akkuea/actions/workflows/contracts-ci.yml/badge.svg)](https://github.com/akkuea/akkuea/actions/workflows/contracts-ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Join us in building a **decentralized educational ecosystem** where educators, students, and creators are empowered, rewarded, and connected. Akkuea is a social network with **purpose**. ✨
+Akkuea is an institutional-grade platform that bridges traditional real estate with decentralized finance. Property owners can tokenize real-world assets as on-chain shares, and investors can use those shares as collateral to access DeFi lending pools - all on Stellar's high-throughput, low-cost network.
 
-## 📋 Table of Contents
+[Getting Started](#getting-started) · [Architecture](#architecture) · [Tech Stack](#tech-stack) · [Contributing](CONTRIBUTING.md) · [Docs](docs/)
 
-- [Akkuea 🚀🎓](#akkuea-)
-  - [🌟 Welcome to Akkuea](#-welcome-to-akkuea)
-  - [📋 Table of Contents](#-table-of-contents)
-  - [🎯 Mission \& Vision](#-mission--vision)
-    - [Mission](#mission)
-    - [Vision](#vision)
-  - [🚀 Why Akkuea?](#-why-akkuea)
-    - [The Problem](#the-problem)
-    - [Our Solution](#our-solution)
-  - [📚 Key Features](#-key-features)
-  - [👥 Key Users](#-key-users)
-  - [💰 Reward System](#-reward-system)
-  - [🛠️ Technology Stack](#️-technology-stack)
-  - [🚀 Getting Started](#-getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Individual Package Development](#individual-package-development)
-    - [Docker Setup (Alternative)](#docker-setup-alternative)
-    - [Verification](#verification)
-    - [Common Issues \& Troubleshooting](#common-issues--troubleshooting)
-    - [Next Steps](#next-steps)
-  - [⚡ Quick Start](#-quick-start)
-  - [🧪 Testing](#-testing)
-    - [Running Tests](#running-tests)
-    - [Test Structure](#test-structure)
-  - [🔧 Environment Variables](#-environment-variables)
-    - [Backend (.env in packages/gin)](#backend-env-in-packagesgin)
-    - [Frontend (.env.local in packages/nextjs)](#frontend-envlocal-in-packagesnextjs)
-  - [🔄 Development Workflow](#-development-workflow)
-    - [Git Workflow](#git-workflow)
-    - [Commit Convention](#commit-convention)
-    - [Code Style](#code-style)
-  - [📊 Project Status](#-project-status)
-  - [💬 Get Involved](#-get-involved)
-  - [🫡 Thanks to Our Contributors](#-thanks-to-our-contributors)
-  - [📜 License](#-license)
+</div>
 
 ---
 
-## 🎯 Mission & Vision
+## Overview
 
-### Mission
+Akkuea solves two tightly coupled problems in the intersection of real estate and DeFi:
 
-To create a collaborative platform where education is **free**, **accessible**, and **high-quality**, built by a diverse and motivated community. We empower those who teach, learn, and share while recognizing the value of every contribution.
+1. **Illiquidity of real estate.** Tokenizing property into fractional on-chain shares makes it possible to trade, transfer, and leverage real-world assets with the same programmability as any blockchain token.
 
-### Vision
+2. **Collateral limitations in DeFi.** By accepting tokenized real estate as collateral, Akkuea unlocks lending capacity backed by tangible, regulated assets rather than purely speculative crypto positions.
 
-A world where anyone, regardless of background, can access and contribute to a **global knowledge library**. Akkuea aims to be the leading educational ecosystem for **collective, decentralized, and rewarded learning**.
-
----
-
-## 🚀 Why Akkuea?
-
-### The Problem
-
-- 📚 **Scattered Resources**: Educational content is fragmented across platforms, making it hard to find and reuse.
-- 🖼️ **Low Quality**: Many resources suffer from poor visuals or organization.
-- 💸 **Lack of Incentives**: Educators and creators often go unrewarded for their efforts.
-- 🌐 **Language Barriers**: Content is often limited to major languages.
-- 🔒 **Proprietary Platforms**: Closed systems prioritize profit over impact.
-
-### Our Solution
-
-- **Centralized Hub**: A single platform with intelligent filters for educational content by level, language, and format.
-- **AI-Powered Enhancement**: Automatic improvements to readability, visuals, and structure.
-- **Transparent Rewards**: A **Stellar blockchain-based token system** that fairly rewards contributions.
-- **Global Access**: Automatic translations, multi-format resources, and device compatibility.
-- **Creator Marketplace**: Connect directly with designers for personalized resources, paid in tokens.
+The platform is built to meet institutional compliance requirements (KYC/AML on-chain, role-based access, audit trails) while remaining open and composable for DeFi participants.
 
 ---
 
-## 📚 Key Features
+## Features
 
-| Feature                       | Description                                                      |
-| ----------------------------- | ---------------------------------------------------------------- |
-| **Centralized Resources**     | Find and share educational materials in one place.               |
-| **Rewards for Participation** | Earn tokens for contributing value to the community.             |
-| **AI Visual Enhancement**     | Enhance documents and images for better educational impact.      |
-| **Transparent Blockchain**    | Secure, traceable rewards via Stellar.                           |
-| **Internal Marketplace**      | Request personalized resources from designers, paid with tokens. |
-| **Automatic Translation**     | Multilingual access for global inclusivity.                      |
-| **Multi-Platform**            | Fully functional on computers, tablets, and mobiles.             |
-| **Accessibility**             | Easy-to-read, multi-format resources for all users.              |
-| **Open Source**               | Developers worldwide can contribute to Akkuea’s growth.          |
+### Real Estate Tokenization
 
----
+- Fractional share ownership of individual properties, tracked entirely on-chain
+- KYC/AML compliance enforced at the smart contract level
+- Minting and burning controls with role-gated admin operations
+- Property metadata storage with immutable audit history
 
-## 👥 Key Users
+### DeFi Lending Protocol
 
-- **Educators**: Share materials, access peer resources, and earn rewards for contributions.
-- **Students**: Discover documents, quizzes, infographics, and join study groups.
-- **Designers & Artists**: Create visuals, animations, and multimedia, earning credits and commissions.
-- **AI Assistance**: Curates content, translates, simplifies, and enhances resources ethically.
+- Collateralized borrowing using tokenized real estate shares
+- Privacy-configurable lending pools for institutional participants
+- Automated interest calculation and liquidation mechanisms
+- Oracle-integrated asset valuation for accurate collateral ratios
 
----
+### Compliance & Security
 
-## 💰 Reward System
-
-Akkuea’s **Stellar blockchain** powers a transparent incentive system:
-
-- **Earn Tokens**: Publish impactful content and receive tokens based on community engagement.
-- **Bonuses**: Consistent contributors gain distinctions and extra rewards.
-- **Traceable Credits**: Every AI-enhanced or collaborative resource tracks contributions.
-- **Use Tokens**: Access marketplace services or withdraw for external use.
-
-**Sharing knowledge = Creating value.** That value is now rewarded! 💡
+- Wallet-based authentication via Stellar signatures - no passwords, no centralized auth
+- Role-based access control across admin, operator, and user tiers
+- Webhook signature verification for all external integrations
+- Rate limiting, input sanitization, and structured audit logging throughout the API
 
 ---
 
-## 🛠️ Technology Stack
+## Architecture
 
-- **Next.js**: Modern, fast, and scalable frontend framework.
-- **Stellar Blockchain**: Secure and transparent reward system.
-- **Generative & Analytical AI**: Powers translation, image enhancement, and content creation.
-- **Open-Source Development**: Community-driven improvement for global collaboration.
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                         Akkuea Platform                          │
+│                                                                  │
+│  ┌─────────────────┐   ┌─────────────────┐   ┌───────────────┐  │
+│  │   Web Frontend  │   │   Backend API   │   │Smart Contracts│  │
+│  │  Next.js + React│◄──►│  Elysia / Bun  │◄──►│  Soroban/Rust │  │
+│  │  localhost:3000 │   │  localhost:3001 │   │Stellar Network│  │
+│  └────────┬────────┘   └────────┬────────┘   └───────────────┘  │
+│           │                     │                                │
+│           └──────────┬──────────┘                               │
+│                      ▼                                           │
+│            ┌──────────────────┐                                  │
+│            │  Shared Library  │                                  │
+│            │ Types · Utils    │                                  │
+│            │ Validation · SDK │                                  │
+│            └──────────────────┘                                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+The repository is a **Bun monorepo** with four workspaces:
+
+| Workspace        | Path             | Role                                                               |
+| ---------------- | ---------------- | ------------------------------------------------------------------ |
+| `@akkuea/webapp` | `apps/webapp`    | Next.js 16 frontend with React 19                                  |
+| `@akkuea/api`    | `apps/api`       | Elysia REST API running on Bun                                     |
+| `@akkuea/shared` | `apps/shared`    | Types, utilities, and Stellar SDK helpers shared across workspaces |
+| Contracts        | `apps/contracts` | Soroban smart contracts written in Rust                            |
+
+### Data Flows
+
+**Property Tokenization**
+
+```
+User submits property → Frontend validates → API verifies KYC
+→ Soroban contract mints shares → Event emitted → API indexes
+→ Frontend reflects updated portfolio
+```
+
+**DeFi Borrowing**
+
+```
+User requests loan → Frontend calculates available collateral
+→ API checks on-chain share balance → Contract validates collateral ratio
+→ Contract disburses funds → Frontend updates lending position
+```
 
 ---
 
-## 🚀 Getting Started
+## Tech Stack
 
-Ready to contribute to the future of education? Follow these steps to get Akkuea running on your local machine.
+| Layer                  | Technology                                                      |
+| ---------------------- | --------------------------------------------------------------- |
+| **Frontend**           | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Zustand, Zod  |
+| **Backend API**        | Elysia, Bun runtime, TypeScript, Drizzle ORM, Zod               |
+| **Database**           | PostgreSQL (Drizzle migrations), Redis (optional caching layer) |
+| **Smart Contracts**    | Rust, Soroban SDK 25, WASM compilation target                   |
+| **Blockchain**         | Stellar (Testnet / Mainnet), Horizon REST API, Soroban RPC      |
+| **Wallet Integration** | `@creit.tech/stellar-wallets-kit`                               |
+| **Testing**            | `bun test`, `@testing-library/react`                            |
+| **CI/CD**              | GitHub Actions (5 independent workflow files)                   |
+| **Tooling**            | Bun 1.2+, ESLint 9, Prettier, Concurrently                      |
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
-
-- **Node.js**: Version 20.11.0 or higher ([Download here](https://nodejs.org/))
-- **Bun**: Version 1.0.25 or higher ([Installation guide](https://bun.sh/docs/installation))
-- **Go**: Version 1.24.2 or higher ([Download here](https://golang.org/dl/))
-- **PostgreSQL**: Version 13.0 or higher for the backend database ([Installation guide](https://www.postgresql.org/download/))
-- **Git**: For version control ([Download here](https://git-scm.com/downloads))
-
-> **💡 Tip**: We recommend using a version manager like [asdf](https://asdf-vm.com/) or [nvm](https://github.com/nvm-sh/nvm) to manage multiple Node.js versions.
+| Tool                                                                                     | Version       | Notes                                  |
+| ---------------------------------------------------------------------------------------- | ------------- | -------------------------------------- |
+| [Bun](https://bun.sh)                                                                    | 1.2+          | Primary runtime and package manager    |
+| [Node.js](https://nodejs.org)                                                            | 18+           | Required by some tooling               |
+| [Rust](https://rustup.rs)                                                                | latest stable | Required only for contract development |
+| [Stellar CLI](https://developers.stellar.org/docs/tools/developer-tools/cli/stellar-cli) | latest        | Required for contract deployment       |
+| [Git](https://git-scm.com)                                                               | any           | Version control                        |
 
 ### Installation
 
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/akkuea/akkuea.git
-   cd akkuea
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   bun install
-   ```
-
-3. **Set up environment variables**
-
-   For the Go backend:
-
-   ```bash
-   cd packages/gin
-   cp env.example .env
-   ```
-
-   Edit the `.env` file with your database credentials and configuration:
-
-   ```env
-   DB_HOST=localhost
-   DB_USER=your_postgres_user
-   DB_PASSWORD=your_postgres_password
-   DB_NAME=akkuea
-   DB_PORT=5432
-   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-   ```
-
-4. **Set up the database**
-
-   Create a PostgreSQL database:
-
-   ```bash
-   createdb akkuea
-   ```
-
-   Or using PostgreSQL CLI:
-
-   ```sql
-   CREATE DATABASE akkuea;
-   ```
-
-5. **Start the development servers**
-
-   From the root directory:
-
-   ```bash
-   bun run dev
-   ```
-
-   This will start all services in parallel:
-   - **Frontend**: http://localhost:3000
-   - **Go API**: http://localhost:8080
-
-### Individual Package Development
-
-You can also run individual packages:
-
 ```bash
-# Frontend (Next.js)
-cd packages/nextjs
-bun run dev
-
-# Go API Backend
-cd packages/gin
-go run main.go
-```
-
-### Docker Setup (Alternative)
-
-If you prefer using Docker:
-
-```bash
-cd packages/gin
-docker-compose up -d
-```
-
-This will start the Go backend with PostgreSQL in containers.
-
-### Verification
-
-Once everything is running, you should be able to:
-
-- ✅ Access the frontend at http://localhost:3000
-- ✅ Make API calls to http://localhost:8080
-- ✅ See database connections working without errors
-
-### Common Issues & Troubleshooting
-
-**Port conflicts**: If ports 3000 or 8080 are already in use, you can modify them in the respective package configurations.
-
-**Database connection issues**:
-
-- Ensure PostgreSQL is running: `brew services start postgresql` (macOS) or `sudo systemctl start postgresql` (Linux)
-- Verify your database credentials in the `.env` file
-- Check if the database exists: `psql -l`
-
-**Bun installation issues**:
-
-- On macOS: `curl -fsSL https://bun.sh/install | bash`
-- On Windows: `powershell -c "irm bun.sh/install.ps1 | iex"`
-- On Linux: `curl -fsSL https://bun.sh/install | bash`
-
-**Go module issues**: Run `go mod tidy` in the `packages/gin` directory.
-
-### Next Steps
-
-- 📖 Check out our [Contributing Guide](CONTRIBUTING.md) for development guidelines
-- 🐛 Report issues on [GitHub Issues](https://github.com/akkuea/akkuea/issues)
-- 💬 Join our [Telegram community](https://t.me/akkuea_community) for support
-
----
-
-## ⚡ Quick Start
-
-For experienced developers who want to get up and running fast:
-
-```bash
-# Clone and setup
-git clone https://github.com/akkuea/akkuea.git
+# 1. Fork and clone the repository (see CONTRIBUTING.md for the fork workflow)
+git clone https://github.com/<your-username>/akkuea.git
 cd akkuea
-bun install
 
-# Setup backend environment
-cd packages/gin
-cp env.example .env
-# Edit .env with your database credentials
+# 2. Install all workspace dependencies
+bun run install:all
 
-# Create database
-createdb akkuea
+# 3. Configure environment variables
+cp apps/api/.env.example apps/api/.env
+# Edit apps/api/.env with your values (see docs/deployment/environment-variables.md)
+```
 
-# Start all services
-cd ../..
+### Running the Platform Locally
+
+```bash
+# Start both frontend and API in parallel
 bun run dev
+
+# Or run each workspace individually
+bun run dev:webapp   # → http://localhost:3000
+bun run dev:api      # → http://localhost:3001
 ```
 
-Visit http://localhost:3000 to see the frontend and http://localhost:8080 for the API.
+Verify your setup:
 
----
+- **Frontend** - visit `http://localhost:3000`
+- **API health** - visit `http://localhost:3001/health`
+- **API docs (Swagger)** - visit `http://localhost:3001/swagger`
 
-## 🧪 Testing
-
-### Running Tests
+### Smart Contract Development
 
 ```bash
-# Run all tests
-bun test
+cd apps/contracts
 
-# Frontend tests
-cd packages/nextjs
-bun test
+# Build contracts (WASM output)
+cargo build --target wasm32-unknown-unknown --release
 
-# Backend tests
-cd packages/gin
-go test ./...
-
-# Run tests with coverage
-go test -cover ./...
+# Run contract unit tests
+cargo test
 ```
 
-### Test Structure
-
-- **Frontend**: Jest and React Testing Library for component tests
-- **Backend**: Go's built-in testing framework with testify for assertions
-- **Integration**: End-to-end tests using Playwright (coming soon)
+For deploying contracts to Stellar Testnet, see [`docs/deployment/deploy-contracts.md`](docs/deployment/deploy-contracts.md).
 
 ---
 
-## 🔧 Environment Variables
+## Available Scripts
 
-### Backend (.env in packages/gin)
+Run from the repository root:
 
-| Variable          | Description                       | Default     | Required |
-| ----------------- | --------------------------------- | ----------- | -------- |
-| `DB_HOST`         | PostgreSQL host                   | `localhost` | ✅       |
-| `DB_USER`         | Database username                 | -           | ✅       |
-| `DB_PASSWORD`     | Database password                 | -           | ✅       |
-| `DB_NAME`         | Database name                     | `akkuea`    | ✅       |
-| `DB_PORT`         | Database port                     | `5432`      | ✅       |
-| `JWT_SECRET`      | JWT signing secret                | -           | ✅       |
-| `PORT`            | API server port                   | `8080`      | ❌       |
-| `STELLAR_NETWORK` | Stellar network (testnet/mainnet) | `testnet`   | ❌       |
-| `AI_API_KEY`      | AI service API key                | -           | ❌       |
-
-### Frontend (.env.local in packages/nextjs)
-
-| Variable                      | Description     | Default                 | Required |
-| ----------------------------- | --------------- | ----------------------- | -------- |
-| `NEXT_PUBLIC_API_URL`         | Backend API URL | `http://localhost:8080` | ✅       |
-| `NEXT_PUBLIC_STELLAR_NETWORK` | Stellar network | `testnet`               | ❌       |
+| Script                     | Description                                    |
+| -------------------------- | ---------------------------------------------- |
+| `bun run dev`              | Start frontend and API concurrently            |
+| `bun run build`            | Build all workspaces                           |
+| `bun run test`             | Run all workspace test suites                  |
+| `bun run lint`             | Lint all workspaces                            |
+| `bun run typecheck`        | Type-check all workspaces                      |
+| `bun run format`           | Format all files with Prettier                 |
+| `bun run clean`            | Remove all build artifacts and `node_modules`  |
+| `bun run build:contracts`  | Build Soroban contracts via `scripts/build.sh` |
+| `bun run deploy:contracts` | Deploy contracts via `scripts/deploy.sh`       |
 
 ---
 
-## 🔄 Development Workflow
+## Environment Variables
 
-### Git Workflow
+All required environment variables are documented in [`docs/deployment/environment-variables.md`](docs/deployment/environment-variables.md). The source of truth is `apps/api/.env.example`.
 
-1. **Fork the repository** on GitHub
-2. **Clone your fork** locally:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/akkuea.git
-   ```
-3. **Create a feature branch**:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-4. **Make your changes** and commit:
-   ```bash
-   git add .
-   git commit -m "feat: add your feature description"
-   ```
-5. **Push to your fork**:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-6. **Create a Pull Request** on GitHub
+Key categories:
 
-### Commit Convention
+- **Database** - PostgreSQL connection string and pool settings
+- **API Server** - Port, environment, log level
+- **Security** - Webhook secret, operations credential, allowed admin wallets
+- **Stellar / Soroban** - Horizon URL, RPC URL, network passphrase, admin keypair, contract IDs
+- **KYC** - Upload directory for compliance documents
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
+> **Security note:** Never commit `.env` files. `STELLAR_ADMIN_SECRET` is a root credential - treat it like a private key and load it from a secrets manager in production.
 
-- `feat:` New features
-- `fix:` Bug fixes
-- `docs:` Documentation changes
-- `style:` Code style changes
-- `refactor:` Code refactoring
-- `test:` Adding or updating tests
-- `chore:` Maintenance tasks
+---
 
-### Code Style
+## CI/CD
 
-- **Frontend**: ESLint + Prettier configuration
-- **Backend**: Go fmt + golangci-lint
-- **Commits**: Conventional commits format
+Akkuea runs five independent GitHub Actions workflows on every push and pull request to `main` and `develop`:
 
-Run linting before committing:
+| Workflow  | File               | Checks                                                                                                |
+| --------- | ------------------ | ----------------------------------------------------------------------------------------------------- |
+| Monorepo  | `monorepo-ci.yml`  | Workspace integrity, dependency audit, bundle sizes, cross-workspace integration, security compliance |
+| API       | `api-ci.yml`       | Lint, type-check, unit tests, build                                                                   |
+| Webapp    | `webapp-ci.yml`    | Lint, type-check, unit tests, build                                                                   |
+| Shared    | `shared-ci.yml`    | Lint, type-check, build                                                                               |
+| Contracts | `contracts-ci.yml` | Rust format, Clippy, unit tests, WASM build                                                           |
 
-```bash
-# Frontend
-cd packages/nextjs
-bun run lint
+All five workflows must pass before any pull request can be merged.
 
-# Backend
-cd packages/gin
-golangci-lint run
+---
+
+## Project Structure
+
+```
+akkuea/
+├── apps/
+│   ├── api/              # Elysia/Bun backend API
+│   │   ├── src/
+│   │   │   ├── controllers/
+│   │   │   ├── services/
+│   │   │   ├── repositories/
+│   │   │   ├── routes/
+│   │   │   ├── middleware/
+│   │   │   ├── db/
+│   │   │   └── workers/
+│   │   └── drizzle/      # Database migrations
+│   ├── webapp/           # Next.js frontend
+│   │   └── src/
+│   │       ├── app/      # App Router pages and layouts
+│   │       ├── components/
+│   │       ├── hooks/
+│   │       ├── services/
+│   │       └── types/
+│   ├── contracts/        # Soroban smart contracts (Rust)
+│   │   └── contracts/
+│   │       └── defi-rwa/
+│   └── shared/           # Shared TypeScript library
+├── docs/
+│   ├── api/              # API endpoint documentation
+│   ├── architecture/     # System design documents
+│   ├── deployment/       # Deployment and environment guides
+│   ├── guides/           # Developer getting-started guides
+│   ├── operations/       # Runbooks for production operations
+│   └── testing/          # Testing strategy and smoke tests
+├── scripts/              # Build and deployment shell scripts
+└── .github/
+    └── workflows/        # GitHub Actions CI definitions
 ```
 
 ---
 
-## 📊 Project Status
+## Documentation
 
-🧱 **Under active development**  
-We’re building the future of education, and we need your help! Contribute, leave feedback, or simply star the repo to show your support. 🌟
-
----
-
-## 💬 Get Involved
-
-- **Contribute**: Check out our [Contributing Guide](CONTRIBUTING.md) to get started.
-- **Report Issues**: Open an issue on [GitHub](https://github.com/akkuea/akkuea/issues).
-- **Join the Community**: Connect with us on our [Telegram group](https://t.me/akkuea_community).
-- **Star the Repo**: Show your support by starring [Akkuea on GitHub](https://github.com/akkuea/akkuea)! ⭐
-
----
-
-## 🫡 Thanks to Our Contributors
-
-<a href="https://github.com/akkuea/akkuea/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=akkuea/akkuea" alt="Contributors" />
-</a>
-
-We’re grateful for every contribution that brings us closer to revolutionizing education! 🙌
+| Document                                                                               | Description                             |
+| -------------------------------------------------------------------------------------- | --------------------------------------- |
+| [`docs/guides/getting-started.md`](docs/guides/getting-started.md)                     | Full local setup walkthrough            |
+| [`docs/architecture/system-architecture.md`](docs/architecture/system-architecture.md) | System design and component breakdown   |
+| [`docs/deployment/environment-variables.md`](docs/deployment/environment-variables.md) | Complete environment variable reference |
+| [`docs/deployment/deploy-contracts.md`](docs/deployment/deploy-contracts.md)           | Contract deployment to Stellar networks |
+| [`docs/api/overview.md`](docs/api/overview.md)                                         | API overview and authentication         |
+| [`docs/api/minting-workflow.md`](docs/api/minting-workflow.md)                         | Property tokenization API flow          |
+| [`docs/api/kyc-workflow.md`](docs/api/kyc-workflow.md)                                 | KYC verification API flow               |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md)                                                   | Contribution workflow and standards     |
 
 ---
 
-## 📜 License
+## Contributing
 
-This project is licensed under the [MIT License](LICENSE).
+We welcome contributions. Akkuea uses a **fork-based workflow** - all changes must come through a fork and pull request. No direct pushes to `main` or `develop`.
 
-**Join the educational revolution! 🚀🎓**  
-**Happy Learning & Contributing! ✨**
+Read the full contribution guide before submitting your first pull request: **[CONTRIBUTING.md](CONTRIBUTING.md)**
+
+---
+
+## License
+
+[MIT](LICENSE) - Acachete Labs

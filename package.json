@@ -1,37 +1,66 @@
 {
-  "name": "scaffold-stellar",
-  "version": "0.1.0",
+  "name": "akkuea",
+  "version": "1.0.0",
+  "description": "Real Estate Tokenization and DeFi Lending Platform on Stellar",
   "private": true,
-  "type": "module",
-  "packageManager": "bun@1.0.25",
   "workspaces": [
-    "packages/*"
+    "apps/api",
+    "apps/shared",
+    "apps/webapp",
+    "apps/akkuea-land"
   ],
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "dev": "bun run dev --parallel",
-    "build": "bun run build",
-    "start": "bun run start",
-    "lint": "bun run lint",
-    "test": "bun test",
-    "clean": "bun run clean --parallel",
-    "prepare": "husky"
-  },
-  "engines": {
-    "node": ">=20.11.0",
-    "bun": ">=1.0.25"
+    "dev": "concurrently \"bun run dev:webapp\" \"bun run dev:api\" \"bun run dev:land\"",
+    "dev:webapp": "cd apps/webapp && bun run dev",
+    "dev:api": "cd apps/api && bun run dev",
+    "dev:land": "cd apps/akkuea-land && bun run dev",
+    "build": "concurrently \"bun run build:api\" \"bun run build:webapp\" \"bun run build:shared\" \"bun run build:land\"",
+    "build:webapp": "cd apps/webapp && bun run build",
+    "build:api": "cd apps/api && bun run build",
+    "build:shared": "cd apps/shared && bun run build",
+    "build:land": "cd apps/akkuea-land && bun run build",
+    "build:contracts": "./scripts/build.sh",
+    "test": "bun test --workspaces",
+    "lint": "concurrently \"cd apps/api && bun run lint\" \"cd apps/webapp && bun run lint\" \"cd apps/shared && bun run lint\" \"cd apps/akkuea-land && bun run lint\"",
+    "typecheck": "concurrently \"cd apps/api && bun run type-check\" \"cd apps/webapp && bun run type-check\" \"cd apps/shared && bun run type-check\" \"cd apps/akkuea-land && bun run type-check\"",
+    "type-check": "bun run typecheck",
+    "clean": "bun run clean --workspaces && rm -rf node_modules",
+    "install:all": "bun install && bun install --workspaces",
+    "deploy:contracts": "./scripts/deploy.sh",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md,rs}\" \"!apps/contracts/**\""
   },
   "devDependencies": {
-    "@types/node": "^24.5.1",
-    "bun-types": "^1.0.25",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.2"
+    "@types/node": "^25.3.0",
+    "concurrently": "^9.2.1",
+    "jsdom": "^29.0.1",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "brace-expansion": "^4.0.1",
-    "husky": "^9.1.7",
-    "next": "^15.5.3",
-    "next-themes": "^0.4.6"
+    "@creit.tech/stellar-wallets-kit": "^1.9.5",
+    "@hookform/resolvers": "^5.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "eslint": "^9.39.2",
+    "jest": "^30.2.0",
+    "react-hook-form": "^7.71.2",
+    "soroban-client": "^1.0.1",
+    "stellar-sdk": "^13.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "bun@1.2.23",
+  "overrides": {
+    "ajv": "^6.14.0",
+    "flatted": "^3.4.0",
+    "axios": "^1.13.5",
+    "file-type": "^21.3.4",
+    "minimatch": ">=10.2.1",
+    "eslint-visitor-keys": "^5.0.1"
   }
 }
