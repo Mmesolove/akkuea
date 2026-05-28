@@ -4,6 +4,7 @@ export * from "./utils";
 export * from "./constants";
 export * from "./errors";
 export * from "./testing";
+export * from "./contracts";
 export * from "./utils/stellar";
 export * from "./utils/validation";
 export * from "./utils/format";
