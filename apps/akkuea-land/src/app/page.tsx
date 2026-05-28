@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { PropertyPanel } from "../components/game/PropertyPanel";
 import { GameProperty, BuildingLevel } from "../types/game.types";
 import { Wallet, Sparkles, MapPin, Grid, Layers, Shield, HelpCircle } from "lucide-react";
+import { useGameWallet } from "../hooks/useGameWallet";
 
 // Mock coordinates and details
 const mockPropertiesList: GameProperty[] = [
@@ -89,9 +90,8 @@ export default function SandboxPage() {
   const [properties, setProperties] = useState<GameProperty[]>(mockPropertiesList);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
   
-  // Simulated Wallet Connection State
-  const [isConnected, setIsConnected] = useState(true);
-  const viewerAddress = "GDVIEWER1234567890123456789012345678901234567890123456";
+  // Consuming global simulated wallet hook
+  const { isConnected, address, login, logout } = useGameWallet();
 
   const handlePropertyUpdate = (updated: GameProperty) => {
     setProperties((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
@@ -102,14 +102,14 @@ export default function SandboxPage() {
   // Helper to determine tile color on the map grid
   const getTileBorderClass = (p: GameProperty) => {
     if (!isConnected) return "border-slate-800 hover:border-slate-700 bg-slate-900/40";
-    if (p.owner === viewerAddress) return "border-emerald-500/40 hover:border-emerald-400 bg-emerald-950/20";
+    if (p.owner === address) return "border-emerald-500/40 hover:border-emerald-400 bg-emerald-950/20";
     if (p.owner === "GBTREASURY") return "border-amber-500/40 hover:border-amber-400 bg-amber-950/20";
     return "border-purple-500/40 hover:border-purple-400 bg-purple-950/20";
   };
 
   const getTileBadge = (p: GameProperty) => {
     if (!isConnected) return <span className="text-slate-500">Not Connected</span>;
-    if (p.owner === viewerAddress) return <span className="text-emerald-400">Owned by You</span>;
+    if (p.owner === address) return <span className="text-emerald-400">Owned by You</span>;
     if (p.owner === "GBTREASURY") return <span className="text-amber-400">Treasury</span>;
     return <span className="text-purple-400">Listed (Other)</span>;
   };
@@ -143,11 +143,11 @@ export default function SandboxPage() {
               </span>
             </div>
             <p className="text-xs font-mono text-slate-400">
-              {isConnected ? `${viewerAddress.slice(0, 8)}...${viewerAddress.slice(-8)}` : "Disconnected"}
+              {isConnected && address ? `${address.slice(0, 8)}...${address.slice(-8)}` : "Disconnected"}
             </p>
           </div>
           <button
-            onClick={() => setIsConnected(!isConnected)}
+            onClick={() => isConnected ? logout() : login()}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-2 border ${
               isConnected
                 ? "bg-slate-800 hover:bg-slate-700 text-white border-slate-750"
@@ -248,9 +248,9 @@ export default function SandboxPage() {
         <PropertyPanel
           property={selectedProperty}
           onPropertyUpdate={handlePropertyUpdate}
-          viewerAddress={isConnected ? viewerAddress : null}
+          viewerAddress={isConnected ? address : null}
           isConnected={isConnected}
-          onConnect={() => setIsConnected(true)}
+          onConnect={login}
           onClose={() => setSelectedPropertyId(null)}
         />
       )}

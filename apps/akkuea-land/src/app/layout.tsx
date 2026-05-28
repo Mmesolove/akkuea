@@ -1,4 +1,5 @@
 import React from "react";
+import { OnboardingGate } from "@/components/game/onboarding/OnboardingGate";
 
 export const metadata = {
   title: "Akkuea Land Sandbox",
@@ -13,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-slate-950 text-white min-h-screen antialiased">
-        {children}
+        <OnboardingGate>{children}</OnboardingGate>
       </body>
     </html>
   );
