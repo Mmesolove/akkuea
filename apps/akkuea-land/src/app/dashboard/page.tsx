@@ -25,6 +25,7 @@ import {
   APARTMENT_MULTIPLIER,
   SKYSCRAPER_MULTIPLIER,
 } from "@akkuea/shared";
+import { SorobanRpc } from "stellar-sdk";
 import { GameProperty, BuildingLevel } from "@/types/game.types";
 import { getWalletKit } from "@/lib/walletKit";
 
@@ -83,13 +84,13 @@ const EVENT_LABELS: Record<EventType, string> = {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const VIEWER_ADDRESS = "GDVIEWER1234567890123456789012345678901234567890123456";
-const MOCK_BASE_LEDGER = 52_480;
+const SOROBAN_RPC_URL = "https://soroban-testnet.stellar.org";
 const EVENTS_PAGE_SIZE = 5;
 
 // ─── Mock data ─────────────────────────────────────────────────────────────────
 // Reflects the same wallet/player from the sandbox page.
-// lastClaimedLedger values are set relative to MOCK_BASE_LEDGER so that
-// computeAccruedIncome produces non-zero results on first render.
+// lastClaimedLedger values are fixed historic ledger numbers so that
+// computeAccruedIncome produces non-zero results once the RPC sequence arrives.
 
 const MOCK_PROPERTIES: DashboardProperty[] = [
   {
@@ -116,7 +117,7 @@ const MOCK_PROPERTIES: DashboardProperty[] = [
     buildingLevel: 1,
     improveCost: 300,
     earnedIncome: 0,
-    lastClaimedLedger: MOCK_BASE_LEDGER - 35_000,
+    lastClaimedLedger: 17_480,
   },
   {
     id: "prop-2",
@@ -142,7 +143,7 @@ const MOCK_PROPERTIES: DashboardProperty[] = [
     buildingLevel: 2,
     improveCost: 1000,
     earnedIncome: 0,
-    lastClaimedLedger: MOCK_BASE_LEDGER - 52_000,
+    lastClaimedLedger: 480,
   },
   {
     id: "prop-3",
@@ -168,7 +169,7 @@ const MOCK_PROPERTIES: DashboardProperty[] = [
     buildingLevel: 3,
     improveCost: 0,
     earnedIncome: 0,
-    lastClaimedLedger: MOCK_BASE_LEDGER - 17_300,
+    lastClaimedLedger: 35_180,
   },
   {
     id: "prop-4",
@@ -194,7 +195,7 @@ const MOCK_PROPERTIES: DashboardProperty[] = [
     buildingLevel: 0,
     improveCost: 100,
     earnedIncome: 0,
-    lastClaimedLedger: MOCK_BASE_LEDGER - 20_000,
+    lastClaimedLedger: 32_480,
   },
 ];
 
@@ -321,7 +322,7 @@ export default function DashboardPage() {
 
   const [isConnected] = useState(true);
   const [landBalance, setLandBalance] = useState(4_250);
-  const [currentLedger, setCurrentLedger] = useState(MOCK_BASE_LEDGER);
+  const [currentLedger, setCurrentLedger] = useState(0);
   const [properties, setProperties] =
     useState<DashboardProperty[]>(MOCK_PROPERTIES);
   const [claimProgress, setClaimProgress] = useState<ClaimProgress | null>(
@@ -329,12 +330,22 @@ export default function DashboardPage() {
   );
   const [eventPage, setEventPage] = useState(1);
 
-  // Advance the mock ledger every 5 s to keep accrued income fresh.
+  // Poll the Soroban RPC for the latest ledger every 5 s so accrued income
+  // is always computed against a fresh on-chain sequence number.
   useEffect(() => {
-    const id = setInterval(
-      () => setCurrentLedger((l) => l + 1),
-      5_000,
-    );
+    const server = new SorobanRpc.Server(SOROBAN_RPC_URL);
+
+    async function fetchLatestLedger() {
+      try {
+        const { sequence } = await server.getLatestLedger();
+        setCurrentLedger(sequence);
+      } catch {
+        // keep the current value on transient network errors
+      }
+    }
+
+    fetchLatestLedger();
+    const id = setInterval(fetchLatestLedger, 5_000);
     return () => clearInterval(id);
   }, []);
 
