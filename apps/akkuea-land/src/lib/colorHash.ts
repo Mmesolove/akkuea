@@ -7,7 +7,7 @@
 
 const TREASURY_ADDRESSES = new Set([
   "",
-  "GBTREASURY",
+  "gbtreasury",
   "treasury",
   "system",
 ]);
