@@ -14,7 +14,7 @@
     "clean": "rm -rf .next"
   },
   "dependencies": {
-    "next": "16.1.7",
+    "next": "^16.2.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "stellar-sdk": "^13.3.0",
@@ -39,7 +39,7 @@
     "@types/react-dom": "^19.2.3",
     "bun-types": "latest",
     "eslint": "^9.39.2",
-    "eslint-config-next": "16.1.7",
+    "eslint-config-next": "^16.2.6",
     "eslint-plugin-security": "^3.0.1",
     "eslint-plugin-xss": "^0.1.12",
     "jsdom": "^29.0.1",
