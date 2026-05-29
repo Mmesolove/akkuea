@@ -428,9 +428,7 @@ fn bump_persistent(env: &Env, key: &Symbol) {
 }
 
 fn bump_owner_index(env: &Env, owner: &Address) {
-    env.storage().persistent().extend_ttl(
-        &(symbol_short!("oidx"), owner),
-        518_400,
-        518_400,
-    );
+    env.storage()
+        .persistent()
+        .extend_ttl(&(symbol_short!("oidx"), owner), 518_400, 518_400);
 }
