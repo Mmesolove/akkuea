@@ -55,6 +55,14 @@ impl GamePropertyNft {
 
         let world = SimpleWorld::new(&env);
         save_world(&env, &world);
+
+        let mut treasury_ids: Vec<u32> = Vec::new(&env);
+        for id in 0..TOTAL_TILES {
+            treasury_ids.push_back(id);
+        }
+        env.storage()
+            .persistent()
+            .set(&(symbol_short!("oidx"), &treasury), &treasury_ids);
     }
 
     /// Transfer property
@@ -98,6 +106,8 @@ impl GamePropertyNft {
         save_approvals(&env, &approves);
 
         save_world(&env, &world);
+
+        Self::update_owner_index(&env, &from, &to, property_id);
 
         events::emit_transfer(&env, Some(from), to, property_id);
     }
@@ -185,6 +195,8 @@ impl GamePropertyNft {
 
         save_world(&env, &world);
 
+        Self::update_owner_index(&env, &from, &to, property_id);
+
         events::emit_transfer(&env, Some(from), to, property_id);
     }
 
@@ -257,15 +269,23 @@ impl GamePropertyNft {
     }
 
     fn update_owner_index(env: &Env, old_owner: &Address, new_owner: &Address, id: u32) {
-        let mut old_ids: Vec<u32> = env
+        let old_ids: Vec<u32> = env
             .storage()
             .persistent()
             .get(&(symbol_short!("oidx"), old_owner))
             .unwrap_or_else(|| Vec::new(env));
-        old_ids.retain(|x| x != id);
+        
+        let mut new_old_ids: Vec<u32> = Vec::new(env);
+        for i in 0..old_ids.len() {
+            let x = old_ids.get(i).unwrap();
+            if x != id {
+                new_old_ids.push_back(x);
+            }
+        }
+        
         env.storage()
             .persistent()
-            .set(&(symbol_short!("oidx"), old_owner), &old_ids);
+            .set(&(symbol_short!("oidx"), old_owner), &new_old_ids);
 
         let mut new_ids: Vec<u32> = env
             .storage()

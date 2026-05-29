@@ -16,7 +16,7 @@ pub struct ApproveEvent {
     pub id: u32,
 }
 
-#[contractevent]
+// #[contractevent]
 // #[derive(Clone, Debug, Eq, PartialEq)]
 // pub struct ImprovedEvent {
 //     pub owner: Address,
