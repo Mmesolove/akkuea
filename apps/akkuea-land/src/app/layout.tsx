@@ -1,8 +1,12 @@
 import React from "react";
+import type { Metadata } from "next";
+import "./globals.css";
+import { OnboardingGate } from "@/components/game/onboarding/OnboardingGate";
 
-export const metadata = {
-  title: "Akkuea Land Sandbox",
-  description: "High-fidelity interactive metaverse property panel sandbox.",
+export const metadata: Metadata = {
+  title: "Akkuea Land | City Builder on Stellar",
+  description:
+    "Build, own, and trade virtual land parcels backed by real-world assets on the Stellar blockchain.",
 };
 
 export default function RootLayout({
@@ -11,9 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="bg-slate-950 text-white min-h-screen antialiased">
-        {children}
+        <OnboardingGate>{children}</OnboardingGate>
       </body>
     </html>
   );
