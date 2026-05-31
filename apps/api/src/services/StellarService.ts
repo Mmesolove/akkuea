@@ -148,7 +148,7 @@ export class StellarService {
     );
     if (typedTransaction) {
       const sentTransaction = await typedTransaction.signAndSend();
-      return sentTransaction.hash;
+      return this.getSentTransactionHash(sentTransaction);
     }
 
     const unsignedXdr = await this.callContractLegacy(contractId, method, args, sourceAccount);
@@ -182,7 +182,7 @@ export class StellarService {
       const sentTransaction = await transaction.signAndSend();
 
       return {
-        txHash: sentTransaction.hash,
+        txHash: this.getSentTransactionHash(sentTransaction),
         contractId: params.contractId,
       };
     } catch (error) {
@@ -466,6 +466,20 @@ export class StellarService {
     }
 
     throw new Error('Expected numeric argument');
+  }
+
+  private getSentTransactionHash(sentTransaction: {
+    sendTransactionResponse?: { hash?: string };
+    getTransactionResponse?: { txHash?: string };
+  }): string {
+    const hash =
+      sentTransaction.sendTransactionResponse?.hash ?? sentTransaction.getTransactionResponse?.txHash;
+
+    if (!hash) {
+      throw new Error('Unable to determine submitted Soroban transaction hash');
+    }
+
+    return hash;
   }
 }
 

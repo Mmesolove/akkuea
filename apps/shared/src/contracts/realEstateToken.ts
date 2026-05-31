@@ -1,18 +1,7 @@
 import type { AssembledTransaction, MethodOptions } from "@stellar/stellar-sdk/contract";
 import type { Client as CombinedContractClient } from "./generated/rwaDefi";
-import {
-  Client as GeneratedRwaDefiClient,
-  type DepositPosition,
-  type BorrowPosition,
-  type LendingPool,
-} from "./generated/rwaDefi";
+import { Client as GeneratedRwaDefiClient } from "./generated/rwaDefi";
 import { buildContractClientOptions, type SorobanClientConfig } from "./clientConfig";
-
-export type {
-  DepositPosition,
-  BorrowPosition,
-  LendingPool,
-} from "./generated/rwaDefi";
 
 export interface MintSharesArgs {
   admin: string;

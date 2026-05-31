@@ -9,7 +9,6 @@ export interface SorobanClientConfig {
   publicKey?: string;
   signTransaction?: SignTransaction;
   allowHttp?: boolean;
-  headers?: Record<string, string>;
 }
 
 export function resolveSorobanRpcUrl(networkPassphrase: string, rpcUrl?: string): string {
@@ -30,7 +29,7 @@ export function createNodeContractSigner(
 
   return {
     publicKey: keypair.publicKey(),
-    signTransaction: async (xdr) => {
+    signTransaction: async (xdr: string) => {
       const transaction = TransactionBuilder.fromXDR(xdr, networkPassphrase);
       transaction.sign(keypair);
 
@@ -52,6 +51,5 @@ export function buildContractClientOptions(config: SorobanClientConfig): ClientO
     publicKey: config.publicKey,
     signTransaction: config.signTransaction,
     allowHttp: config.allowHttp,
-    headers: config.headers,
   };
 }

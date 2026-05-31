@@ -15,6 +15,10 @@ Why this was done:
 - Centralize contract method typing in the shared package so the API and webapp can use the same interface.
 - Align the client surface with the actual compiled contract ABI rather than relying on handwritten method assumptions.
 
+Why Quasar was not added on this branch:
+- This implementation uses the official `@stellar/stellar-sdk` contract client generated from the current on-chain ABI, which gives the same typed invocation surface needed for this issue without introducing a second Soroban runtime abstraction.
+- The shared package and generated client now compile cleanly against the repo's existing Stellar SDK dependency graph, so the branch keeps the typed-client behavior while minimizing extra package/runtime drift.
+
 Branch notes:
 - The current Rust contract and deployment docs describe a single combined Soroban contract, so the token and lending clients are implemented as typed domain wrappers over the same underlying contract ID.
 - The branch was pushed to:

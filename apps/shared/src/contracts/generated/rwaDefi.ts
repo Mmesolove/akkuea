@@ -1,14 +1,12 @@
 import { Buffer } from "buffer";
-import { Address } from "@stellar/stellar-sdk";
 import {
   AssembledTransaction,
   Client as ContractClient,
-  ClientOptions as ContractClientOptions,
-  MethodOptions,
-  Result,
   Spec as ContractSpec,
 } from "@stellar/stellar-sdk/contract";
 import type {
+  ClientOptions as ContractClientOptions,
+  MethodOptions,
   u32,
   i32,
   u64,
@@ -18,16 +16,18 @@ import type {
   u256,
   i256,
   Option,
-  Timepoint,
   Duration,
 } from "@stellar/stellar-sdk/contract";
 export * from "@stellar/stellar-sdk";
 export * as contract from "@stellar/stellar-sdk/contract";
 export * as rpc from "@stellar/stellar-sdk/rpc";
 
-if (typeof window !== "undefined") {
-  //@ts-ignore Buffer exists
-  window.Buffer = window.Buffer || Buffer;
+const browserWindow = globalThis as typeof globalThis & {
+  window?: { Buffer?: typeof Buffer };
+};
+
+if (browserWindow.window) {
+  browserWindow.window.Buffer = browserWindow.window.Buffer || Buffer;
 }
 
 
@@ -503,7 +503,7 @@ export interface Client {
 
 }
 export class Client extends ContractClient {
-  static async deploy<T = Client>(
+  static override async deploy<T = Client>(
         /** Constructor/Initialization Args for the contract's `__constructor` method */
         {admin}: {admin: string},
     /** Options for initializing a Client as well as for calling a method, with extras specific to deploying. */
@@ -519,7 +519,7 @@ export class Client extends ContractClient {
   ): Promise<AssembledTransaction<T>> {
     return ContractClient.deploy({admin}, options)
   }
-  constructor(public readonly options: ContractClientOptions) {
+  constructor(public override readonly options: ContractClientOptions) {
     super(
       new ContractSpec([ "AAAAAAAAAAAAAAAFcmVwYXkAAAAAAAADAAAAAAAAAAhib3Jyb3dlcgAAABMAAAAAAAAAB3Bvb2xfaWQAAAAAEAAAAAAAAAAGYW1vdW50AAAAAAALAAAAAQAAB9AAAAAOQm9ycm93UG9zaXRpb24AAA==",
         "AAAAAAAAAAAAAAAGYm9ycm93AAAAAAAFAAAAAAAAAAhib3Jyb3dlcgAAABMAAAAAAAAAB3Bvb2xfaWQAAAAAEAAAAAAAAAAGYW1vdW50AAAAAAALAAAAAAAAABBjb2xsYXRlcmFsX2Fzc2V0AAAAEwAAAAAAAAARY29sbGF0ZXJhbF9hbW91bnQAAAAAAAALAAAAAQAAB9AAAAAOQm9ycm93UG9zaXRpb24AAA==",
