@@ -7,9 +7,10 @@ import {
   StellarWalletsKitProvider,
   SmartAccountKitProvider,
   privyProvider,
-  PollarProvider,
+  pollarProvider,
 } from "@/services/wallet";
 import { PrivyWrapper } from "@/components/auth/PrivyWrapper";
+import { PollarWrapper } from "@/components/auth/PollarWrapper";
 
 walletRegistry.register(new StellarWalletsKitProvider());
 
@@ -32,10 +33,8 @@ if (process.env.NEXT_PUBLIC_SMART_ACCOUNT_RPC_URL) {
   );
 }
 
-if (process.env.NEXT_PUBLIC_POLLAR_KEY) {
-  walletRegistry.register(
-    new PollarProvider(process.env.NEXT_PUBLIC_POLLAR_KEY),
-  );
+if (process.env.NEXT_PUBLIC_POLLAR_API_KEY) {
+  walletRegistry.register(pollarProvider);
 }
 
 interface ProvidersProps {
@@ -55,7 +54,9 @@ export function Providers({ children }: ProvidersProps) {
 
   return (
     <PrivyWrapper>
-      <ThemeProvider>{children}</ThemeProvider>
+      <PollarWrapper>
+        <ThemeProvider>{children}</ThemeProvider>
+      </PollarWrapper>
     </PrivyWrapper>
   );
 }

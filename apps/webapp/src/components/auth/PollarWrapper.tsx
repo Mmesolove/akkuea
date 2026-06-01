@@ -1,16 +1,47 @@
 "use client";
 
-import { type ReactNode } from "react";
+import React, { useEffect } from "react";
+import {
+  PollarProvider as PollarSDKProvider,
+  usePollar,
+} from "@pollar/react";
+import { pollarProvider } from "@/services/wallet/providers/pollar";
 
-interface PollarWrapperProps {
-  children: ReactNode;
+function PollarBridge() {
+  const { walletAddress, isAuthenticated, login, logout, signTx } = usePollar();
+
+  useEffect(() => {
+    pollarProvider.setPollarInterface({
+      login: () => login({ provider: "google" }),
+      logout,
+      getAddress: () => walletAddress,
+      isAuthenticated: () => isAuthenticated,
+      signTx: async (xdr: string) => {
+        const outcome = await signTx(xdr);
+        if (outcome.status !== "signed") {
+          throw new Error(`Pollar signTx failed: ${outcome.details ?? outcome.status}`);
+        }
+        return outcome.signedXdr;
+      },
+    });
+
+    return () => {
+      pollarProvider.setPollarInterface(null);
+    };
+  }, [walletAddress, isAuthenticated, login, logout, signTx]);
+
+  return null;
 }
 
-/**
- * Renders children only when the Pollar provider is available
- * (i.e. NEXT_PUBLIC_POLLAR_KEY is set).
- */
-export function PollarWrapper({ children }: PollarWrapperProps) {
-  if (!process.env.NEXT_PUBLIC_POLLAR_KEY) return null;
-  return <>{children}</>;
+export function PollarWrapper({ children }: { children: React.ReactNode }) {
+  const apiKey = process.env.NEXT_PUBLIC_POLLAR_API_KEY;
+
+  if (!apiKey) return <>{children}</>;
+
+  return (
+    <PollarSDKProvider client={{ apiKey }}>
+      <PollarBridge />
+      {children}
+    </PollarSDKProvider>
+  );
 }
