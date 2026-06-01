@@ -473,7 +473,8 @@ export class StellarService {
     getTransactionResponse?: { txHash?: string };
   }): string {
     const hash =
-      sentTransaction.sendTransactionResponse?.hash ?? sentTransaction.getTransactionResponse?.txHash;
+      sentTransaction.sendTransactionResponse?.hash ??
+      sentTransaction.getTransactionResponse?.txHash;
 
     if (!hash) {
       throw new Error('Unable to determine submitted Soroban transaction hash');

@@ -1,4 +1,7 @@
-import type { AssembledTransaction, MethodOptions } from "@stellar/stellar-sdk/contract";
+import type {
+  AssembledTransaction,
+  MethodOptions,
+} from "@stellar/stellar-sdk/contract";
 import type { Client as CombinedContractClient } from "./generated/rwaDefi";
 import {
   Client as GeneratedRwaDefiClient,
@@ -6,9 +9,16 @@ import {
   type DepositPosition,
   type LendingPool,
 } from "./generated/rwaDefi";
-import { buildContractClientOptions, type SorobanClientConfig } from "./clientConfig";
+import {
+  buildContractClientOptions,
+  type SorobanClientConfig,
+} from "./clientConfig";
 
-export type { BorrowPosition, DepositPosition, LendingPool } from "./generated/rwaDefi";
+export type {
+  BorrowPosition,
+  DepositPosition,
+  LendingPool,
+} from "./generated/rwaDefi";
 
 export interface CreatePoolArgs {
   admin: string;
@@ -42,7 +52,9 @@ export class DefiLendingContractClient {
   constructor(private readonly client: CombinedContractClient) {}
 
   static fromConfig(config: SorobanClientConfig): DefiLendingContractClient {
-    return new DefiLendingContractClient(new GeneratedRwaDefiClient(buildContractClientOptions(config)));
+    return new DefiLendingContractClient(
+      new GeneratedRwaDefiClient(buildContractClientOptions(config)),
+    );
   }
 
   createPool(
@@ -65,7 +77,10 @@ export class DefiLendingContractClient {
     );
   }
 
-  deposit(args: PoolActionArgs, options?: MethodOptions): Promise<AssembledTransaction<null>> {
+  deposit(
+    args: PoolActionArgs,
+    options?: MethodOptions,
+  ): Promise<AssembledTransaction<null>> {
     return this.client.deposit(
       {
         depositor: args.actor,
@@ -76,7 +91,10 @@ export class DefiLendingContractClient {
     );
   }
 
-  withdraw(args: PoolActionArgs, options?: MethodOptions): Promise<AssembledTransaction<null>> {
+  withdraw(
+    args: PoolActionArgs,
+    options?: MethodOptions,
+  ): Promise<AssembledTransaction<null>> {
     return this.client.withdraw(
       {
         depositor: args.actor,
@@ -117,7 +135,10 @@ export class DefiLendingContractClient {
     );
   }
 
-  accrueInterest(poolId: string, options?: MethodOptions): Promise<AssembledTransaction<null>> {
+  accrueInterest(
+    poolId: string,
+    options?: MethodOptions,
+  ): Promise<AssembledTransaction<null>> {
     return this.client.accrue_interest(
       {
         pool_id: poolId,
@@ -126,7 +147,10 @@ export class DefiLendingContractClient {
     );
   }
 
-  getPool(poolId: string, options?: MethodOptions): Promise<AssembledTransaction<LendingPool>> {
+  getPool(
+    poolId: string,
+    options?: MethodOptions,
+  ): Promise<AssembledTransaction<LendingPool>> {
     return this.client.get_pool(
       {
         pool_id: poolId,

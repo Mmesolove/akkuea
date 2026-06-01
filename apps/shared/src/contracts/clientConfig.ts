@@ -1,5 +1,8 @@
 import { Keypair, Networks, TransactionBuilder } from "@stellar/stellar-sdk";
-import type { ClientOptions, SignTransaction } from "@stellar/stellar-sdk/contract";
+import type {
+  ClientOptions,
+  SignTransaction,
+} from "@stellar/stellar-sdk/contract";
 import { API_ENDPOINTS } from "../constants";
 
 export interface SorobanClientConfig {
@@ -11,7 +14,10 @@ export interface SorobanClientConfig {
   allowHttp?: boolean;
 }
 
-export function resolveSorobanRpcUrl(networkPassphrase: string, rpcUrl?: string): string {
+export function resolveSorobanRpcUrl(
+  networkPassphrase: string,
+  rpcUrl?: string,
+): string {
   if (rpcUrl) {
     return rpcUrl;
   }
@@ -41,7 +47,9 @@ export function createNodeContractSigner(
   };
 }
 
-export function buildContractClientOptions(config: SorobanClientConfig): ClientOptions {
+export function buildContractClientOptions(
+  config: SorobanClientConfig,
+): ClientOptions {
   const networkPassphrase = config.networkPassphrase ?? Networks.TESTNET;
 
   return {

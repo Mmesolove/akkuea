@@ -1,7 +1,13 @@
-import type { AssembledTransaction, MethodOptions } from "@stellar/stellar-sdk/contract";
+import type {
+  AssembledTransaction,
+  MethodOptions,
+} from "@stellar/stellar-sdk/contract";
 import type { Client as CombinedContractClient } from "./generated/rwaDefi";
 import { Client as GeneratedRwaDefiClient } from "./generated/rwaDefi";
-import { buildContractClientOptions, type SorobanClientConfig } from "./clientConfig";
+import {
+  buildContractClientOptions,
+  type SorobanClientConfig,
+} from "./clientConfig";
 
 export interface MintSharesArgs {
   admin: string;
@@ -47,7 +53,9 @@ function toU64(value: bigint): bigint {
 export class RealEstateTokenContractClient {
   constructor(private readonly client: CombinedContractClient) {}
 
-  static fromConfig(config: SorobanClientConfig): RealEstateTokenContractClient {
+  static fromConfig(
+    config: SorobanClientConfig,
+  ): RealEstateTokenContractClient {
     return new RealEstateTokenContractClient(
       new GeneratedRwaDefiClient(buildContractClientOptions(config)),
     );
@@ -122,7 +130,10 @@ export class RealEstateTokenContractClient {
     );
   }
 
-  approve(args: ApproveSharesArgs, options?: MethodOptions): Promise<AssembledTransaction<null>> {
+  approve(
+    args: ApproveSharesArgs,
+    options?: MethodOptions,
+  ): Promise<AssembledTransaction<null>> {
     return this.client.approve(
       {
         owner: args.owner,

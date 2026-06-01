@@ -26,13 +26,21 @@ if (browserWindow.window) {
   browserWindow.window.Buffer = browserWindow.window.Buffer || Buffer;
 }
 
+export type Role =
+  | { tag: "Admin"; values: void }
+  | { tag: "Pauser"; values: void }
+  | { tag: "Oracle"; values: void }
+  | { tag: "Verifier"; values: void }
+  | { tag: "Liquidator"; values: void }
+  | { tag: "EmergencyGuard"; values: void };
 
-
-
-export type Role = {tag: "Admin", values: void} | {tag: "Pauser", values: void} | {tag: "Oracle", values: void} | {tag: "Verifier", values: void} | {tag: "Liquidator", values: void} | {tag: "EmergencyGuard", values: void};
-
-export type RoleKey = {tag: "Admin", values: void} | {tag: "Paused", values: void} | {tag: "HasRole", values: readonly [string, Role]} | {tag: "RoleMembers", values: readonly [Role]} | {tag: "PendingAdmin", values: void} | {tag: "PendingRecovery", values: void};
-
+export type RoleKey =
+  | { tag: "Admin"; values: void }
+  | { tag: "Paused"; values: void }
+  | { tag: "HasRole"; values: readonly [string, Role] }
+  | { tag: "RoleMembers"; values: readonly [Role] }
+  | { tag: "PendingAdmin"; values: void }
+  | { tag: "PendingRecovery"; values: void };
 
 export interface PendingRecoveryData {
   earliest_execution: u64;
@@ -40,78 +48,75 @@ export interface PendingRecoveryData {
   scheduled_by: string;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * Storage key types for the lending module
  */
-export type LendingKey = {tag: "Pool", values: readonly [string]} | {tag: "PoolList", values: void} | {tag: "PoolCount", values: void} | {tag: "DepositPosition", values: readonly [string, string]} | {tag: "BorrowPosition", values: readonly [string, string]} | {tag: "UserDeposits", values: readonly [string]} | {tag: "UserBorrows", values: readonly [string]} | {tag: "PoolTotalDeposits", values: readonly [string]} | {tag: "PoolTotalBorrows", values: readonly [string]} | {tag: "PoolInterestIndex", values: readonly [string]} | {tag: "PoolLastAccrual", values: readonly [string]} | {tag: "PoolReserves", values: readonly [string]} | {tag: "InterestRateModel", values: readonly [string]} | {tag: "LendingConfig", values: void} | {tag: "PoolPaused", values: readonly [string]} | {tag: "Admin", values: void} | {tag: "OracleAddress", values: void} | {tag: "OracleMaxAge", values: void} | {tag: "OracleMinPrice", values: void};
-
+export type LendingKey =
+  | { tag: "Pool"; values: readonly [string] }
+  | { tag: "PoolList"; values: void }
+  | { tag: "PoolCount"; values: void }
+  | { tag: "DepositPosition"; values: readonly [string, string] }
+  | { tag: "BorrowPosition"; values: readonly [string, string] }
+  | { tag: "UserDeposits"; values: readonly [string] }
+  | { tag: "UserBorrows"; values: readonly [string] }
+  | { tag: "PoolTotalDeposits"; values: readonly [string] }
+  | { tag: "PoolTotalBorrows"; values: readonly [string] }
+  | { tag: "PoolInterestIndex"; values: readonly [string] }
+  | { tag: "PoolLastAccrual"; values: readonly [string] }
+  | { tag: "PoolReserves"; values: readonly [string] }
+  | { tag: "InterestRateModel"; values: readonly [string] }
+  | { tag: "LendingConfig"; values: void }
+  | { tag: "PoolPaused"; values: readonly [string] }
+  | { tag: "Admin"; values: void }
+  | { tag: "OracleAddress"; values: void }
+  | { tag: "OracleMaxAge"; values: void }
+  | { tag: "OracleMinPrice"; values: void };
 
 /**
  * Lending pool configuration and state
  */
 export interface LendingPool {
   /**
- * Asset symbol (e.g., "USDC")
- */
-asset: string;
+   * Asset symbol (e.g., "USDC")
+   */
+  asset: string;
   /**
- * Asset contract address
- */
-asset_address: string;
+   * Asset contract address
+   */
+  asset_address: string;
   /**
- * Collateral factor (e.g., 75% = 750000000000000000)
- */
-collateral_factor: i128;
+   * Collateral factor (e.g., 75% = 750000000000000000)
+   */
+  collateral_factor: i128;
   /**
- * Pool creation timestamp
- */
-created_at: u64;
+   * Pool creation timestamp
+   */
+  created_at: u64;
   /**
- * Unique pool identifier
- */
-id: string;
+   * Unique pool identifier
+   */
+  id: string;
   /**
- * Whether pool is active
- */
-is_active: boolean;
+   * Whether pool is active
+   */
+  is_active: boolean;
   /**
- * Liquidation penalty (e.g., 5% = 50000000000000000)
- */
-liquidation_penalty: i128;
+   * Liquidation penalty (e.g., 5% = 50000000000000000)
+   */
+  liquidation_penalty: i128;
   /**
- * Liquidation threshold (e.g., 80% = 800000000000000000)
- */
-liquidation_threshold: i128;
+   * Liquidation threshold (e.g., 80% = 800000000000000000)
+   */
+  liquidation_threshold: i128;
   /**
- * Pool display name
- */
-name: string;
+   * Pool display name
+   */
+  name: string;
   /**
- * Reserve factor in basis points (e.g., 1000 = 10%)
- */
-reserve_factor: u32;
+   * Reserve factor in basis points (e.g., 1000 = 10%)
+   */
+  reserve_factor: u32;
 }
-
 
 /**
  * Lending pool event data
@@ -122,7 +127,6 @@ export interface DepositEvent {
   pool_id: string;
 }
 
-
 /**
  * Withdraw event data
  */
@@ -132,7 +136,6 @@ export interface WithdrawEvent {
   pool_id: string;
 }
 
-
 /**
  * Pool created event data
  */
@@ -141,187 +144,193 @@ export interface PoolCreatedEvent {
   pool_id: string;
 }
 
-
 /**
  * Interest rate model parameters
  * Uses linear model: rate = base + (utilization * slope)
  */
 export interface InterestRateModel {
   /**
- * Base rate (in PRECISION units, e.g., 2% = 0.02 * PRECISION)
- */
-base_rate: i128;
+   * Base rate (in PRECISION units, e.g., 2% = 0.02 * PRECISION)
+   */
+  base_rate: i128;
   /**
- * Optimal utilization rate (e.g., 80% = 0.8 * PRECISION)
- */
-optimal_utilization: i128;
+   * Optimal utilization rate (e.g., 80% = 0.8 * PRECISION)
+   */
+  optimal_utilization: i128;
   /**
- * Slope below optimal utilization
- */
-slope1: i128;
+   * Slope below optimal utilization
+   */
+  slope1: i128;
   /**
- * Slope above optimal utilization
- */
-slope2: i128;
+   * Slope above optimal utilization
+   */
+  slope2: i128;
 }
-
 
 /**
  * Borrow position for a user in a pool
  */
 export interface BorrowPosition {
   /**
- * Timestamp of borrow
- */
-borrowed_at: u64;
+   * Timestamp of borrow
+   */
+  borrowed_at: u64;
   /**
- * Borrower address
- */
-borrower: string;
+   * Borrower address
+   */
+  borrower: string;
   /**
- * Collateral amount
- */
-collateral_amount: i128;
+   * Collateral amount
+   */
+  collateral_amount: i128;
   /**
- * Collateral asset address
- */
-collateral_asset: string;
+   * Collateral asset address
+   */
+  collateral_asset: string;
   /**
- * Interest index at borrow time
- */
-index_at_borrow: i128;
+   * Interest index at borrow time
+   */
+  index_at_borrow: i128;
   /**
- * Pool ID
- */
-pool_id: string;
+   * Pool ID
+   */
+  pool_id: string;
   /**
- * Principal borrowed
- */
-principal: i128;
+   * Principal borrowed
+   */
+  principal: i128;
 }
-
 
 /**
  * Deposit position for a user in a pool
  */
 export interface DepositPosition {
   /**
- * Deposit amount in underlying tokens
- */
-amount: i128;
+   * Deposit amount in underlying tokens
+   */
+  amount: i128;
   /**
- * Timestamp of deposit
- */
-deposited_at: u64;
+   * Timestamp of deposit
+   */
+  deposited_at: u64;
   /**
- * Depositor address
- */
-depositor: string;
+   * Depositor address
+   */
+  depositor: string;
   /**
- * Interest index at deposit time
- */
-index_at_deposit: i128;
+   * Interest index at deposit time
+   */
+  index_at_deposit: i128;
   /**
- * Pool ID
- */
-pool_id: string;
+   * Pool ID
+   */
+  pool_id: string;
   /**
- * Share of pool (for interest calculation)
- */
-shares: i128;
+   * Share of pool (for interest calculation)
+   */
+  shares: i128;
 }
 
 /**
  * Storage keys for the property tokenization contract
- * 
+ *
  * This enum defines unique storage keys to prevent collisions and organize
  * contract data efficiently. Each key type corresponds to a specific data
  * structure stored on-chain.
  */
-export type StorageKey = {tag: "TokenConfig", values: void} | {tag: "Property", values: readonly [u64]} | {tag: "ShareBalance", values: readonly [u64, string]} | {tag: "TotalShares", values: readonly [u64]} | {tag: "Admin", values: void} | {tag: "PropertyCounter", values: void} | {tag: "Allowance", values: readonly [u64, string, string]} | {tag: "AvailableShares", values: readonly [u64]} | {tag: "PricePerShare", values: readonly [u64]} | {tag: "PropertyVerified", values: readonly [u64]};
-
+export type StorageKey =
+  | { tag: "TokenConfig"; values: void }
+  | { tag: "Property"; values: readonly [u64] }
+  | { tag: "ShareBalance"; values: readonly [u64, string] }
+  | { tag: "TotalShares"; values: readonly [u64] }
+  | { tag: "Admin"; values: void }
+  | { tag: "PropertyCounter"; values: void }
+  | { tag: "Allowance"; values: readonly [u64, string, string] }
+  | { tag: "AvailableShares"; values: readonly [u64] }
+  | { tag: "PricePerShare"; values: readonly [u64] }
+  | { tag: "PropertyVerified"; values: readonly [u64] };
 
 /**
  * Token configuration for the property tokenization contract
- * 
+ *
  * This structure stores global configuration for the token, including
  * metadata like symbol, name, and admin settings. Storage is optimized
  * by using a single instance per contract.
  */
 export interface TokenConfig {
   /**
- * Admin address with special permissions
- */
-admin: string;
+   * Admin address with special permissions
+   */
+  admin: string;
   /**
- * Number of decimal places (typically 7 for Soroban)
- */
-decimals: u32;
+   * Number of decimal places (typically 7 for Soroban)
+   */
+  decimals: u32;
   /**
- * Whether the contract is initialized
- */
-initialized: boolean;
+   * Whether the contract is initialized
+   */
+  initialized: boolean;
   /**
- * Token name (e.g., "Property Token")
- */
-name: string;
+   * Token name (e.g., "Property Token")
+   */
+  name: string;
   /**
- * Token symbol (e.g., "PRPT")
- */
-symbol: string;
+   * Token symbol (e.g., "PRPT")
+   */
+  symbol: string;
 }
-
 
 /**
  * Property metadata stored on-chain
- * 
+ *
  * This structure contains all essential information about a tokenized property.
  * Fields are optimized for storage cost while maintaining necessary data integrity.
  */
 export interface PropertyMetadata {
   /**
- * Timestamp when the property was registered
- */
-created_at: u64;
+   * Timestamp when the property was registered
+   */
+  created_at: u64;
   /**
- * Detailed description of the property
- */
-description: string;
+   * Detailed description of the property
+   */
+  description: string;
   /**
- * Whether the property is active for trading
- */
-is_active: boolean;
+   * Whether the property is active for trading
+   */
+  is_active: boolean;
   /**
- * Physical location or address
- */
-location: string;
+   * Physical location or address
+   */
+  location: string;
   /**
- * Property name or title
- */
-name: string;
+   * Property name or title
+   */
+  name: string;
   /**
- * Address of the property owner/creator
- */
-owner: string;
+   * Address of the property owner/creator
+   */
+  owner: string;
   /**
- * Unique identifier for the property
- */
-property_id: u64;
+   * Unique identifier for the property
+   */
+  property_id: u64;
   /**
- * Total number of shares available for this property
- */
-total_shares: u64;
+   * Total number of shares available for this property
+   */
+  total_shares: u64;
   /**
- * Total valuation in base currency units
- */
-valuation: i128;
+   * Total valuation in base currency units
+   */
+  valuation: i128;
 }
 
 /**
  * Asset type
  */
-export type Asset = {tag: "Stellar", values: readonly [string]} | {tag: "Other", values: readonly [string]};
-
+export type Asset =
+  | { tag: "Stellar"; values: readonly [string] }
+  | { tag: "Other"; values: readonly [string] };
 
 /**
  * Price data for an asset at a specific timestamp
@@ -335,173 +344,355 @@ export interface Client {
   /**
    * Construct and simulate a repay transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  repay: ({borrower, pool_id, amount}: {borrower: string, pool_id: string, amount: i128}, options?: MethodOptions) => Promise<AssembledTransaction<BorrowPosition>>
+  repay: (
+    {
+      borrower,
+      pool_id,
+      amount,
+    }: { borrower: string; pool_id: string; amount: i128 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<BorrowPosition>>;
 
   /**
    * Construct and simulate a borrow transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  borrow: ({borrower, pool_id, amount, collateral_asset, collateral_amount}: {borrower: string, pool_id: string, amount: i128, collateral_asset: string, collateral_amount: i128}, options?: MethodOptions) => Promise<AssembledTransaction<BorrowPosition>>
+  borrow: (
+    {
+      borrower,
+      pool_id,
+      amount,
+      collateral_asset,
+      collateral_amount,
+    }: {
+      borrower: string;
+      pool_id: string;
+      amount: i128;
+      collateral_asset: string;
+      collateral_amount: i128;
+    },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<BorrowPosition>>;
 
   /**
    * Construct and simulate a approve transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  approve: ({owner, spender, property_id, amount}: {owner: string, spender: string, property_id: u64, amount: u64}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  approve: (
+    {
+      owner,
+      spender,
+      property_id,
+      amount,
+    }: { owner: string; spender: string; property_id: u64; amount: u64 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a deposit transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  deposit: ({depositor, pool_id, amount}: {depositor: string, pool_id: string, amount: i128}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  deposit: (
+    {
+      depositor,
+      pool_id,
+      amount,
+    }: { depositor: string; pool_id: string; amount: i128 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a get_pool transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_pool: ({pool_id}: {pool_id: string}, options?: MethodOptions) => Promise<AssembledTransaction<LendingPool>>
+  get_pool: (
+    { pool_id }: { pool_id: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<LendingPool>>;
 
   /**
    * Construct and simulate a withdraw transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  withdraw: ({depositor, pool_id, amount}: {depositor: string, pool_id: string, amount: i128}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  withdraw: (
+    {
+      depositor,
+      pool_id,
+      amount,
+    }: { depositor: string; pool_id: string; amount: i128 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a set_oracle transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  set_oracle: ({oracle_address, caller}: {oracle_address: string, caller: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  set_oracle: (
+    { oracle_address, caller }: { oracle_address: string; caller: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a burn_shares transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  burn_shares: ({owner, property_id, amount}: {owner: string, property_id: u64, amount: u64}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  burn_shares: (
+    {
+      owner,
+      property_id,
+      amount,
+    }: { owner: string; property_id: u64; amount: u64 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a create_pool transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  create_pool: ({admin, pool_id, name, asset, asset_address, collateral_factor, liquidation_threshold, liquidation_penalty, reserve_factor}: {admin: string, pool_id: string, name: string, asset: string, asset_address: string, collateral_factor: i128, liquidation_threshold: i128, liquidation_penalty: i128, reserve_factor: u32}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  create_pool: (
+    {
+      admin,
+      pool_id,
+      name,
+      asset,
+      asset_address,
+      collateral_factor,
+      liquidation_threshold,
+      liquidation_penalty,
+      reserve_factor,
+    }: {
+      admin: string;
+      pool_id: string;
+      name: string;
+      asset: string;
+      asset_address: string;
+      collateral_factor: i128;
+      liquidation_threshold: i128;
+      liquidation_penalty: i128;
+      reserve_factor: u32;
+    },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a get_balance transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_balance: ({property_id, owner}: {property_id: u64, owner: string}, options?: MethodOptions) => Promise<AssembledTransaction<u64>>
+  get_balance: (
+    { property_id, owner }: { property_id: u64; owner: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<u64>>;
 
   /**
    * Construct and simulate a mint_shares transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  mint_shares: ({admin, property_id, recipient, amount}: {admin: string, property_id: u64, recipient: string, amount: u64}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  mint_shares: (
+    {
+      admin,
+      property_id,
+      recipient,
+      amount,
+    }: { admin: string; property_id: u64; recipient: string; amount: u64 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a get_allowance transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_allowance: ({property_id, owner, spender}: {property_id: u64, owner: string, spender: string}, options?: MethodOptions) => Promise<AssembledTransaction<u64>>
+  get_allowance: (
+    {
+      property_id,
+      owner,
+      spender,
+    }: { property_id: u64; owner: string; spender: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<u64>>;
 
   /**
    * Construct and simulate a transfer_from transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  transfer_from: ({spender, from, to, property_id, amount}: {spender: string, from: string, to: string, property_id: u64, amount: u64}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  transfer_from: (
+    {
+      spender,
+      from,
+      to,
+      property_id,
+      amount,
+    }: {
+      spender: string;
+      from: string;
+      to: string;
+      property_id: u64;
+      amount: u64;
+    },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a accrue_interest transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  accrue_interest: ({pool_id}: {pool_id: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  accrue_interest: (
+    { pool_id }: { pool_id: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a cancel_recovery transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  cancel_recovery: ({caller}: {caller: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  cancel_recovery: (
+    { caller }: { caller: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a emergency_pause transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  emergency_pause: ({caller}: {caller: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  emergency_pause: (
+    { caller }: { caller: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a purchase_shares transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  purchase_shares: ({buyer, property_id, amount, payment_token}: {buyer: string, property_id: u64, amount: u64, payment_token: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  purchase_shares: (
+    {
+      buyer,
+      property_id,
+      amount,
+      payment_token,
+    }: { buyer: string; property_id: u64; amount: u64; payment_token: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a transfer_shares transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  transfer_shares: ({from, to, property_id, amount}: {from: string, to: string, property_id: u64, amount: u64}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  transfer_shares: (
+    {
+      from,
+      to,
+      property_id,
+      amount,
+    }: { from: string; to: string; property_id: u64; amount: u64 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a execute_recovery transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  execute_recovery: ({caller}: {caller: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  execute_recovery: (
+    { caller }: { caller: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a get_total_shares transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_total_shares: ({property_id}: {property_id: u64}, options?: MethodOptions) => Promise<AssembledTransaction<u64>>
+  get_total_shares: (
+    { property_id }: { property_id: u64 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<u64>>;
 
   /**
    * Construct and simulate a get_user_borrows transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_user_borrows: ({user}: {user: string}, options?: MethodOptions) => Promise<AssembledTransaction<Array<string>>>
+  get_user_borrows: (
+    { user }: { user: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<Array<string>>>;
 
   /**
    * Construct and simulate a get_oracle_config transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    * Return the current oracle guardrail parameters: `(max_age, min_price)`.
    */
-  get_oracle_config: (options?: MethodOptions) => Promise<AssembledTransaction<readonly [u64, i128]>>
+  get_oracle_config: (
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<readonly [u64, i128]>>;
 
   /**
    * Construct and simulate a get_total_borrows transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_total_borrows: ({pool_id}: {pool_id: string}, options?: MethodOptions) => Promise<AssembledTransaction<i128>>
+  get_total_borrows: (
+    { pool_id }: { pool_id: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<i128>>;
 
   /**
    * Construct and simulate a get_user_deposits transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_user_deposits: ({user}: {user: string}, options?: MethodOptions) => Promise<AssembledTransaction<Array<string>>>
+  get_user_deposits: (
+    { user }: { user: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<Array<string>>>;
 
   /**
    * Construct and simulate a schedule_recovery transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  schedule_recovery: ({caller}: {caller: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  schedule_recovery: (
+    { caller }: { caller: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a set_oracle_config transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    * Configure oracle guardrail parameters.
-   * 
+   *
    * * `max_age`   – maximum acceptable price age in seconds (0 = use default 3600).
    * * `min_price` – minimum normalized price (floor). Set to 0 to disable.
    */
-  set_oracle_config: ({caller, max_age, min_price}: {caller: string, max_age: u64, min_price: i128}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  set_oracle_config: (
+    {
+      caller,
+      max_age,
+      min_price,
+    }: { caller: string; max_age: u64; min_price: i128 },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a get_interest_index transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_interest_index: ({pool_id}: {pool_id: string}, options?: MethodOptions) => Promise<AssembledTransaction<i128>>
+  get_interest_index: (
+    { pool_id }: { pool_id: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<i128>>;
 
   /**
    * Construct and simulate a get_total_deposits transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_total_deposits: ({pool_id}: {pool_id: string}, options?: MethodOptions) => Promise<AssembledTransaction<i128>>
+  get_total_deposits: (
+    { pool_id }: { pool_id: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<i128>>;
 
   /**
    * Construct and simulate a get_borrow_position transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_borrow_position: ({user, pool_id}: {user: string, pool_id: string}, options?: MethodOptions) => Promise<AssembledTransaction<BorrowPosition>>
+  get_borrow_position: (
+    { user, pool_id }: { user: string; pool_id: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<BorrowPosition>>;
 
   /**
    * Construct and simulate a get_deposit_position transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  get_deposit_position: ({user, pool_id}: {user: string, pool_id: string}, options?: MethodOptions) => Promise<AssembledTransaction<DepositPosition>>
+  get_deposit_position: (
+    { user, pool_id }: { user: string; pool_id: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<DepositPosition>>;
 
   /**
    * Construct and simulate a grant_emergency_role transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  grant_emergency_role: ({admin, target}: {admin: string, target: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
+  grant_emergency_role: (
+    { admin, target }: { admin: string; target: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 
   /**
    * Construct and simulate a revoke_emergency_role transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  revoke_emergency_role: ({admin, target}: {admin: string, target: string}, options?: MethodOptions) => Promise<AssembledTransaction<null>>
-
+  revoke_emergency_role: (
+    { admin, target }: { admin: string; target: string },
+    options?: MethodOptions,
+  ) => Promise<AssembledTransaction<null>>;
 }
 export class Client extends ContractClient {
   static override async deploy<T = Client>(
-        /** Constructor/Initialization Args for the contract's `__constructor` method */
-        {admin}: {admin: string},
+    /** Constructor/Initialization Args for the contract's `__constructor` method */
+    { admin }: { admin: string },
     /** Options for initializing a Client as well as for calling a method, with extras specific to deploying. */
     options: MethodOptions &
       Omit<ContractClientOptions, "contractId"> & {
@@ -511,13 +702,14 @@ export class Client extends ContractClient {
         salt?: Buffer | Uint8Array;
         /** The format used to decode `wasmHash`, if it's provided as a string. */
         format?: "hex" | "base64";
-      }
+      },
   ): Promise<AssembledTransaction<T>> {
-    return ContractClient.deploy({admin}, options)
+    return ContractClient.deploy({ admin }, options);
   }
   constructor(public override readonly options: ContractClientOptions) {
     super(
-      new ContractSpec([ "AAAAAAAAAAAAAAAFcmVwYXkAAAAAAAADAAAAAAAAAAhib3Jyb3dlcgAAABMAAAAAAAAAB3Bvb2xfaWQAAAAAEAAAAAAAAAAGYW1vdW50AAAAAAALAAAAAQAAB9AAAAAOQm9ycm93UG9zaXRpb24AAA==",
+      new ContractSpec([
+        "AAAAAAAAAAAAAAAFcmVwYXkAAAAAAAADAAAAAAAAAAhib3Jyb3dlcgAAABMAAAAAAAAAB3Bvb2xfaWQAAAAAEAAAAAAAAAAGYW1vdW50AAAAAAALAAAAAQAAB9AAAAAOQm9ycm93UG9zaXRpb24AAA==",
         "AAAAAAAAAAAAAAAGYm9ycm93AAAAAAAFAAAAAAAAAAhib3Jyb3dlcgAAABMAAAAAAAAAB3Bvb2xfaWQAAAAAEAAAAAAAAAAGYW1vdW50AAAAAAALAAAAAAAAABBjb2xsYXRlcmFsX2Fzc2V0AAAAEwAAAAAAAAARY29sbGF0ZXJhbF9hbW91bnQAAAAAAAALAAAAAQAAB9AAAAAOQm9ycm93UG9zaXRpb24AAA==",
         "AAAAAAAAAAAAAAAHYXBwcm92ZQAAAAAEAAAAAAAAAAVvd25lcgAAAAAAABMAAAAAAAAAB3NwZW5kZXIAAAAAEwAAAAAAAAALcHJvcGVydHlfaWQAAAAABgAAAAAAAAAGYW1vdW50AAAAAAAGAAAAAA==",
         "AAAAAAAAAAAAAAAHZGVwb3NpdAAAAAADAAAAAAAAAAlkZXBvc2l0b3IAAAAAAAATAAAAAAAAAAdwb29sX2lkAAAAABAAAAAAAAAABmFtb3VudAAAAAAACwAAAAA=",
@@ -585,42 +777,43 @@ export class Client extends ContractClient {
         "AAAAAQAAAO1Ub2tlbiBjb25maWd1cmF0aW9uIGZvciB0aGUgcHJvcGVydHkgdG9rZW5pemF0aW9uIGNvbnRyYWN0CgpUaGlzIHN0cnVjdHVyZSBzdG9yZXMgZ2xvYmFsIGNvbmZpZ3VyYXRpb24gZm9yIHRoZSB0b2tlbiwgaW5jbHVkaW5nCm1ldGFkYXRhIGxpa2Ugc3ltYm9sLCBuYW1lLCBhbmQgYWRtaW4gc2V0dGluZ3MuIFN0b3JhZ2UgaXMgb3B0aW1pemVkCmJ5IHVzaW5nIGEgc2luZ2xlIGluc3RhbmNlIHBlciBjb250cmFjdC4AAAAAAAAAAAAAC1Rva2VuQ29uZmlnAAAAAAUAAAAmQWRtaW4gYWRkcmVzcyB3aXRoIHNwZWNpYWwgcGVybWlzc2lvbnMAAAAAAAVhZG1pbgAAAAAAABMAAAAyTnVtYmVyIG9mIGRlY2ltYWwgcGxhY2VzICh0eXBpY2FsbHkgNyBmb3IgU29yb2JhbikAAAAAAAhkZWNpbWFscwAAAAQAAAAjV2hldGhlciB0aGUgY29udHJhY3QgaXMgaW5pdGlhbGl6ZWQAAAAAC2luaXRpYWxpemVkAAAAAAEAAAAjVG9rZW4gbmFtZSAoZS5nLiwgIlByb3BlcnR5IFRva2VuIikAAAAABG5hbWUAAAAQAAAAG1Rva2VuIHN5bWJvbCAoZS5nLiwgIlBSUFQiKQAAAAAGc3ltYm9sAAAAAAAQ",
         "AAAAAQAAAMJQcm9wZXJ0eSBtZXRhZGF0YSBzdG9yZWQgb24tY2hhaW4KClRoaXMgc3RydWN0dXJlIGNvbnRhaW5zIGFsbCBlc3NlbnRpYWwgaW5mb3JtYXRpb24gYWJvdXQgYSB0b2tlbml6ZWQgcHJvcGVydHkuCkZpZWxkcyBhcmUgb3B0aW1pemVkIGZvciBzdG9yYWdlIGNvc3Qgd2hpbGUgbWFpbnRhaW5pbmcgbmVjZXNzYXJ5IGRhdGEgaW50ZWdyaXR5LgAAAAAAAAAAABBQcm9wZXJ0eU1ldGFkYXRhAAAACQAAACpUaW1lc3RhbXAgd2hlbiB0aGUgcHJvcGVydHkgd2FzIHJlZ2lzdGVyZWQAAAAAAApjcmVhdGVkX2F0AAAAAAAGAAAAJERldGFpbGVkIGRlc2NyaXB0aW9uIG9mIHRoZSBwcm9wZXJ0eQAAAAtkZXNjcmlwdGlvbgAAAAAQAAAAKldoZXRoZXIgdGhlIHByb3BlcnR5IGlzIGFjdGl2ZSBmb3IgdHJhZGluZwAAAAAACWlzX2FjdGl2ZQAAAAAAAAEAAAAcUGh5c2ljYWwgbG9jYXRpb24gb3IgYWRkcmVzcwAAAAhsb2NhdGlvbgAAABAAAAAWUHJvcGVydHkgbmFtZSBvciB0aXRsZQAAAAAABG5hbWUAAAAQAAAAJUFkZHJlc3Mgb2YgdGhlIHByb3BlcnR5IG93bmVyL2NyZWF0b3IAAAAAAAAFb3duZXIAAAAAAAATAAAAIlVuaXF1ZSBpZGVudGlmaWVyIGZvciB0aGUgcHJvcGVydHkAAAAAAAtwcm9wZXJ0eV9pZAAAAAAGAAAAMlRvdGFsIG51bWJlciBvZiBzaGFyZXMgYXZhaWxhYmxlIGZvciB0aGlzIHByb3BlcnR5AAAAAAAMdG90YWxfc2hhcmVzAAAABgAAACZUb3RhbCB2YWx1YXRpb24gaW4gYmFzZSBjdXJyZW5jeSB1bml0cwAAAAAACXZhbHVhdGlvbgAAAAAAAAs=",
         "AAAAAgAAAApBc3NldCB0eXBlAAAAAAAAAAAABUFzc2V0AAAAAAAAAgAAAAEAAAAAAAAAB1N0ZWxsYXIAAAAAAQAAABMAAAABAAAAAAAAAAVPdGhlcgAAAAAAAAEAAAAR",
-        "AAAAAQAAAC9QcmljZSBkYXRhIGZvciBhbiBhc3NldCBhdCBhIHNwZWNpZmljIHRpbWVzdGFtcAAAAAAAAAAACVByaWNlRGF0YQAAAAAAAAIAAAAAAAAABXByaWNlAAAAAAAACwAAAAAAAAAJdGltZXN0YW1wAAAAAAAABg==" ]),
-      options
-    )
+        "AAAAAQAAAC9QcmljZSBkYXRhIGZvciBhbiBhc3NldCBhdCBhIHNwZWNpZmljIHRpbWVzdGFtcAAAAAAAAAAACVByaWNlRGF0YQAAAAAAAAIAAAAAAAAABXByaWNlAAAAAAAACwAAAAAAAAAJdGltZXN0YW1wAAAAAAAABg==",
+      ]),
+      options,
+    );
   }
   public readonly fromJSON = {
     repay: this.txFromJSON<BorrowPosition>,
-        borrow: this.txFromJSON<BorrowPosition>,
-        approve: this.txFromJSON<null>,
-        deposit: this.txFromJSON<null>,
-        get_pool: this.txFromJSON<LendingPool>,
-        withdraw: this.txFromJSON<null>,
-        set_oracle: this.txFromJSON<null>,
-        burn_shares: this.txFromJSON<null>,
-        create_pool: this.txFromJSON<null>,
-        get_balance: this.txFromJSON<u64>,
-        mint_shares: this.txFromJSON<null>,
-        get_allowance: this.txFromJSON<u64>,
-        transfer_from: this.txFromJSON<null>,
-        accrue_interest: this.txFromJSON<null>,
-        cancel_recovery: this.txFromJSON<null>,
-        emergency_pause: this.txFromJSON<null>,
-        purchase_shares: this.txFromJSON<null>,
-        transfer_shares: this.txFromJSON<null>,
-        execute_recovery: this.txFromJSON<null>,
-        get_total_shares: this.txFromJSON<u64>,
-        get_user_borrows: this.txFromJSON<Array<string>>,
-        get_oracle_config: this.txFromJSON<readonly [u64, i128]>,
-        get_total_borrows: this.txFromJSON<i128>,
-        get_user_deposits: this.txFromJSON<Array<string>>,
-        schedule_recovery: this.txFromJSON<null>,
-        set_oracle_config: this.txFromJSON<null>,
-        get_interest_index: this.txFromJSON<i128>,
-        get_total_deposits: this.txFromJSON<i128>,
-        get_borrow_position: this.txFromJSON<BorrowPosition>,
-        get_deposit_position: this.txFromJSON<DepositPosition>,
-        grant_emergency_role: this.txFromJSON<null>,
-        revoke_emergency_role: this.txFromJSON<null>
-  }
+    borrow: this.txFromJSON<BorrowPosition>,
+    approve: this.txFromJSON<null>,
+    deposit: this.txFromJSON<null>,
+    get_pool: this.txFromJSON<LendingPool>,
+    withdraw: this.txFromJSON<null>,
+    set_oracle: this.txFromJSON<null>,
+    burn_shares: this.txFromJSON<null>,
+    create_pool: this.txFromJSON<null>,
+    get_balance: this.txFromJSON<u64>,
+    mint_shares: this.txFromJSON<null>,
+    get_allowance: this.txFromJSON<u64>,
+    transfer_from: this.txFromJSON<null>,
+    accrue_interest: this.txFromJSON<null>,
+    cancel_recovery: this.txFromJSON<null>,
+    emergency_pause: this.txFromJSON<null>,
+    purchase_shares: this.txFromJSON<null>,
+    transfer_shares: this.txFromJSON<null>,
+    execute_recovery: this.txFromJSON<null>,
+    get_total_shares: this.txFromJSON<u64>,
+    get_user_borrows: this.txFromJSON<Array<string>>,
+    get_oracle_config: this.txFromJSON<readonly [u64, i128]>,
+    get_total_borrows: this.txFromJSON<i128>,
+    get_user_deposits: this.txFromJSON<Array<string>>,
+    schedule_recovery: this.txFromJSON<null>,
+    set_oracle_config: this.txFromJSON<null>,
+    get_interest_index: this.txFromJSON<i128>,
+    get_total_deposits: this.txFromJSON<i128>,
+    get_borrow_position: this.txFromJSON<BorrowPosition>,
+    get_deposit_position: this.txFromJSON<DepositPosition>,
+    grant_emergency_role: this.txFromJSON<null>,
+    revoke_emergency_role: this.txFromJSON<null>,
+  };
 }
