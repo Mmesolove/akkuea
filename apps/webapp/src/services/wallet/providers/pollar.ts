@@ -58,7 +58,10 @@ export class PollarProvider implements SignableWalletProvider {
     this.pollarInterface?.logout();
   }
 
-  async signTransaction(xdr: string, _networkPassphrase: string): Promise<string> {
+  async signTransaction(
+    xdr: string,
+    _networkPassphrase: string,
+  ): Promise<string> {
     if (!this.pollarInterface) {
       throw new Error("Pollar SDK not initialized");
     }

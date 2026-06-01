@@ -33,7 +33,7 @@ if (process.env.NEXT_PUBLIC_SMART_ACCOUNT_RPC_URL) {
   );
 }
 
-if (process.env.NEXT_PUBLIC_POLLAR_API_KEY) {
+if (process.env.NEXT_PUBLIC_POLLAR_KEY) {
   walletRegistry.register(pollarProvider);
 }
 

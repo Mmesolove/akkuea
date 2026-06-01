@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach } from "bun:test";
 import { PollarProvider } from "../pollar";
 
-function makeInterface(overrides: Partial<Parameters<PollarProvider["setPollarInterface"]>[0]> = {}) {
+function makeInterface(
+  overrides: Partial<Parameters<PollarProvider["setPollarInterface"]>[0]> = {},
+) {
   return {
     login: () => {},
     logout: () => {},
@@ -24,7 +26,9 @@ describe("PollarProvider", () => {
   });
 
   it("reflects isAuthenticated from injected interface", () => {
-    provider.setPollarInterface(makeInterface({ isAuthenticated: () => false }));
+    provider.setPollarInterface(
+      makeInterface({ isAuthenticated: () => false }),
+    );
     expect(provider.isConnected).toBe(false);
 
     provider.setPollarInterface(makeInterface({ isAuthenticated: () => true }));
@@ -42,7 +46,9 @@ describe("PollarProvider", () => {
     provider.setPollarInterface(
       makeInterface({
         isAuthenticated: () => false,
-        login: () => { loginCalled = true; },
+        login: () => {
+          loginCalled = true;
+        },
         getAddress: () => "",
       }),
     );
@@ -51,19 +57,32 @@ describe("PollarProvider", () => {
   });
 
   it("connect() throws when interface not set", async () => {
-    await expect(provider.connect()).rejects.toThrow("Pollar SDK not initialized");
+    await expect(provider.connect()).rejects.toThrow(
+      "Pollar SDK not initialized",
+    );
   });
 
   it("disconnect() calls logout()", async () => {
     let logoutCalled = false;
-    provider.setPollarInterface(makeInterface({ logout: () => { logoutCalled = true; } }));
+    provider.setPollarInterface(
+      makeInterface({
+        logout: () => {
+          logoutCalled = true;
+        },
+      }),
+    );
     await provider.disconnect();
     expect(logoutCalled).toBe(true);
   });
 
   it("signTransaction() returns signed XDR", async () => {
-    provider.setPollarInterface(makeInterface({ signTx: async () => "signed-result" }));
-    const result = await provider.signTransaction("raw-xdr", "Test SDF Network ; September 2015");
+    provider.setPollarInterface(
+      makeInterface({ signTx: async () => "signed-result" }),
+    );
+    const result = await provider.signTransaction(
+      "raw-xdr",
+      "Test SDF Network ; September 2015",
+    );
     expect(result).toBe("signed-result");
   });
 

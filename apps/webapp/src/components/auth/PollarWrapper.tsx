@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import {
-  PollarProvider as PollarSDKProvider,
-  usePollar,
-} from "@pollar/react";
+import { PollarProvider as PollarSDKProvider, usePollar } from "@pollar/react";
 import { pollarProvider } from "@/services/wallet/providers/pollar";
 
 function PollarBridge() {
@@ -19,7 +16,9 @@ function PollarBridge() {
       signTx: async (xdr: string) => {
         const outcome = await signTx(xdr);
         if (outcome.status !== "signed") {
-          throw new Error(`Pollar signTx failed: ${outcome.details ?? outcome.status}`);
+          throw new Error(
+            `Pollar signTx failed: ${outcome.details ?? outcome.status}`,
+          );
         }
         return outcome.signedXdr;
       },
@@ -34,7 +33,7 @@ function PollarBridge() {
 }
 
 export function PollarWrapper({ children }: { children: React.ReactNode }) {
-  const apiKey = process.env.NEXT_PUBLIC_POLLAR_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_POLLAR_KEY;
 
   if (!apiKey) return <>{children}</>;
 
