@@ -7,6 +7,7 @@ import {
   StellarWalletsKitProvider,
   SmartAccountKitProvider,
   privyProvider,
+  PollarProvider,
 } from "@/services/wallet";
 import { PrivyWrapper } from "@/components/auth/PrivyWrapper";
 
