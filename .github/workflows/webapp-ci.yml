@@ -64,7 +64,7 @@ jobs:
       - name: Run unit tests
         run: |
           cd apps/webapp
-          bun test --coverage --coverage-threshold 60
+          bun test --coverage --coverage-threshold=60
 
       # - name: E2E tests
       #   run: |
